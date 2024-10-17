@@ -1,0 +1,13 @@
+
+config IMAGE_SIZE
+	int "Image size in MB"
+	depends on IMAGE_FORMAT_EXT2 || IMAGE_FORMAT_EXT4
+	default 0
+	help
+	  Resize final image to defined size in MB.
+
+config NOPASSWD
+	bool "Set empty password for user root"
+	default n
+
+source "addons/vm/autologin/Kconfig"

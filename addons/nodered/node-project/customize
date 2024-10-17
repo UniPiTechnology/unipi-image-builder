@@ -1,0 +1,34 @@
+#!/bin/bash
+
+
+chroot "$1" su - unipi -c 'chown unipi: -R ~/.node-red && cd ~/.node-red && npm install'
+
+cat <<EOF >"$1/etc/systemd/system/node-red.service"
+[Unit]
+Description=Node-RED graphical event wiring tool
+Wants=network.target
+
+[Service]
+Type=simple
+User=unipi
+Group=unipi
+WorkingDirectory=/home/unipi
+Nice=5
+ExecStart=/usr/bin/node-red
+# Use SIGINT to stop
+KillSignal=SIGINT
+# Auto restart on crash
+Restart=on-failure
+# Tag things in the log
+SyslogIdentifier=Node-RED
+#StandardOutput=syslog
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+if test "${MMDEBSTRAP_MODE:-}" = chrootless; then
+	systemctl --root "$1" enable node-red.service
+else
+	chroot "$1" systemctl enable node-red.service
+fi

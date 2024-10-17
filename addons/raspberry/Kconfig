@@ -1,0 +1,4 @@
+config RPI_SOURCE
+	bool  "Enable Raspberry Pi Apt repositories"
+	default y if NEURON
+	default n if SOC_IMX || SOC_ROCK

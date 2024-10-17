@@ -1,0 +1,16 @@
+config NODE_RED
+	bool "Install Node-RED package"
+	default n
+
+config NODE_SOURCE
+	bool
+	default y if NODE_RED
+	help
+	  "Enable NodeJS Apt repositories"
+
+config NODE_PROJECT
+	bool "Create Node-RED default project for Unipi"
+	depends on NODE_RED
+	default y if NODE_RED
+	help
+	  "Install default project for Unipi controller"
