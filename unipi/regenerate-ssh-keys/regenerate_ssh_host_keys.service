@@ -1,0 +1,19 @@
+[Unit]
+Description=Regenerate SSH host keys
+# Don=t activate Before option. It causes deadlock during dpkg-reconfigure
+#Before=ssh.service
+ConditionFileIsExecutable=/usr/bin/ssh-keygen
+
+[Service]
+Type=oneshot
+ExecStartPre=-/bin/sh -c "if which remount; then remount rw; fi"
+ExecStartPre=-/bin/bash -c "source /etc/ssh/check-mac 2>/dev/null || /bin/rm -f -v /etc/ssh/ssh_host_*_key*"
+ExecStartPre=-/bin/dd if=/dev/hwrng of=/dev/urandom count=1 bs=4096
+ExecStart=/usr/bin/ssh-keygen -A -v
+ExecStartPost=/bin/systemctl disable regenerate_ssh_host_keys
+ExecStartPost=-/bin/sh -c "sync"
+ExecStartPost=-/bin/sh -c "if which remount; then remount; fi"
+ExecStartPost=-/bin/sh -c "if systemctl is-failed ssh; then systemctl --no-block start ssh; else systemctl --no-block restart ssh; fi"
+
+[Install]
+WantedBy=multi-user.target

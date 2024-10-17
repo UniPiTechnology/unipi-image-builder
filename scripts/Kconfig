@@ -1,0 +1,14 @@
+
+source "scripts/init/Kconfig"
+
+menu "Aditional packages"
+source "scripts/packages/Kconfig"
+endmenu
+
+menu "Network settings"
+source "scripts/network/Kconfig"
+endmenu
+
+menu "User settings"
+source "scripts/users/Kconfig"
+endmenu

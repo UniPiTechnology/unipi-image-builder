@@ -1,0 +1,123 @@
+if UNIPI_SOURCE
+
+choice
+	prompt "Unipi platform selection"
+
+config EDGE
+	bool "Unipi Edge"
+	select SOC_BCM
+
+config NEURON
+	bool "Unipi Neuron"
+	select RPI_SOURCE
+	select SOC_BCM
+
+config PATRON
+	bool "Unipi Patron"
+	select SOC_IMX
+
+config IRIS
+	bool "Unipi Iris"
+	select SOC_IMX
+
+config GATE
+	bool "Unipi Gate"
+	select SOC_ROCK
+
+config UNIPI1
+	bool "Unipi Unipi1"
+	select SOC_BCM
+
+config OEMZULU
+	bool "OEM Zulu based platform"
+	select SOC_IMX
+
+endchoice
+
+config PRODUCT
+	string "Select OEM name" if OEMZULU
+	default "edge" if EDGE
+	default "neuron" if NEURON
+	default "patron" if PATRON
+	default "g1" if GATE
+	default "iris" if IRIS
+	default "unipi1" if UNIPI1
+
+config SOC_BCM
+	bool
+	depends on EDGE || NEURON || UNIPI1
+
+config SOC_IMX
+	bool
+	depends on PATRON || IRIS || OEMZULU
+
+config SOC_ROCK
+	bool
+	depends on GATE
+
+config UNIPI_32_BIT
+	bool "Select 32-bit armhf architecture" if NEURON
+	default n if EDGE || PATRON || GATE || IRIS
+
+config UNIPI_ESSENTIAL
+	bool "Install Unipi essential packages"
+	default y if ! UNKNOWN
+	help
+	  Install Linux kernel an bootloader (U-boot, raspi-firmware)
+	  This is required for boot image on real Unipi controller.
+
+config UNIPI_RECOMMENDED
+	bool "Install Unipi specific recommended packages"
+	default y if ! UNKNOWN
+	help
+	  Install important packages to use all Unipi hardware component.
+	    - unipi-kernel-modules for access to hw components
+	    - os-configurator to self configure OS
+	    - altboot to enable service boot mode
+	    - unipi-modbus-tools (modbus server), mbpoll (modbus client)
+
+config UNIPI_LOCALES
+	bool "Set default locales"
+	default y if ! UNKNOWN
+
+config UNIPI_REGENERATE_SSH
+	bool "Install service to regenerate ssh server keys"
+	default y if ! UNKNOWN
+
+config UNIPI_UPDATE_REGDB
+	bool "Install upstream regulatory.db for wifi"
+	default y if ! UNKNOWN
+
+config UNIPI_WAIT_ONLINE
+	bool "Systemd-wait-online wait for any interface not for all"
+	default y if ! UNKNOWN
+
+config UNIPI_DISABLE_JOURNAL
+	bool "Disable persistent journal"
+	default y if ! UNKNOWN
+
+config UNIPI_HAVEGED
+	bool "Install haveged daemon"
+	default y if ! UNKNOWN
+
+config UNIPI_IMAGE_VERSION
+	bool
+	default y if ! UNKNOWN
+
+config UNIPI_FSTAB
+	bool "Create default fstab"
+	default y
+
+config UNIPI_GETTY
+	bool "Enable getty only if framebuffer exists"
+	default y
+
+config UNIPI_FWUPDATE
+	bool "Force firmware update on first boot" if ! GATE && ! UNIPI1
+	default n
+
+config UNIPI_EVOK
+	bool "Install Evok server" if ! EDGE && ! GATE
+	default n
+
+endif

@@ -1,0 +1,65 @@
+choice
+	prompt "Networking system"
+	default NETWORKD if INIT_SYSTEMD
+
+config NETWORKD
+	bool "systemd-networkd"
+	help
+	  Use systemd-networkd style for configuring networking.
+	  No ifupdown/dhcpcd scripts
+
+config IFUPDOWN
+	bool "ifupdown"
+	help
+	  Use ifupdown style for configuring networking
+
+endchoice
+
+config NETWORK_NAMES
+	bool "Use traditional network interface names"
+	default y if ! UNKNOWN
+
+config NETWORKD_IF
+	bool "Configure interfaces"
+	depends on NETWORKD
+	default y if NETWORKD
+	help
+	  Set default configuration for interfaces.
+
+config RESOLVED
+	bool "Use systemd-resolved"
+	default y if INIT_SYSTEMD
+	depends on INIT_SYSTEMD
+	help
+	  Use systemd-resolved for dns resolving
+
+source scripts/network/ifupdown/Kconfig
+
+config INSTALL_WIFI
+	bool "Install wifi support"
+	default y if SOC_BCM
+	help
+	  Install packages needed for using wifi adapters
+
+config INSTALL_LTE
+	bool "Install LTE support"
+	default n
+	help
+	  Install packages needed for using LTE adapters in Unipi controllers
+
+config INSTALL_WIREGUARD
+	bool "Install wireguard support"
+	default n
+	help
+	  Install wireguard VPN support
+
+config HOSTNAME
+	string "Hostname"
+	default "unipi"
+	help
+	  Set default hostname
+
+config WAIT_ONLINE
+	bool "Wait for any interface in systemd-wait-online not for all"
+	default y if ! UNKNOWN
+

@@ -1,0 +1,15 @@
+#!/bin/bash
+# Copyright (C) Unipi Technology spol. s r.o. - All Rights Reserved
+# SPDX-License-Identifier: MIT
+#
+# @author Miroslav Ondra <ondra@unipi.technology>
+# @author Unipi Technology <info@unipi.technology>
+# @date 2024-10-07
+
+# This is mmdebstrap customize hook to  modify starting parameters
+# of haveged - entropy generator
+
+set -eu
+
+# modify starting parameter
+sed 's/^.*DAEMON_ARGS.*$/DAEMON_ARGS="-w 1024 -d16"/' -i "$1/etc/default/haveged"

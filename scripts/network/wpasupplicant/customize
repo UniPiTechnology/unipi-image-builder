@@ -1,0 +1,43 @@
+#!/bin/bash
+# Copyright (C) Unipi Technology spol. s r.o. - All Rights Reserved
+# SPDX-License-Identifier: MIT
+#
+# @author Miroslav Ondra <ondra@unipi.technology>
+# @author UniPi <info@unipi.technology>
+# @date 2024-10-07
+
+# This is mmdebstrap customize hook that configures wpasupplicant
+# to start dependetly on wlan0 interface
+
+set -eu
+
+##### prepare wpa_supplicant dependency on wlan0
+mkdir -p "$1/etc/systemd/system/wpa_supplicant@wlan0.service.d"
+cat <<EOF > "$1/etc/systemd/system/wpa_supplicant@wlan0.service.d/override.conf"
+[Unit]
+Requires=
+BindsTo=sys-subsystem-net-devices-wlan0.device
+[Install]
+Alias=
+WantedBy=
+WantedBy=sys-subsystem-net-devices-wlan0.device
+EOF
+
+# create sample config  wpa_supplicant on wlan0
+mkdir -p "$1/etc/wpa_supplicant"
+cat <<EOF > "$1/etc/wpa_supplicant/wpa_supplicant-wlan0.conf"
+ctrl_interface=/run/wpa_supplicant
+eapol_version=1
+ap_scan=1
+fast_reauth=1
+
+#network={
+#  ssid="Unipi"
+#  psk="xxx"
+#  priority=5
+#}
+EOF
+
+chroot "$1" systemctl enable wpa_supplicant@wlan0
+# disable global wpa_supplicant
+chroot "$1" systemctl disable wpa_supplicant

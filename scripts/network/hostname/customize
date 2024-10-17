@@ -1,0 +1,21 @@
+#!/bin/bash
+# Copyright (C) Unipi Technology spol. s r.o. - All Rights Reserved
+# SPDX-License-Identifier: MIT
+#
+# @author Miroslav Ondra <ondra@unipi.technology>
+# @author UniPi <info@unipi.technology>
+# @date 2024-10-07
+
+# This is mmdebstrap customize hook that configures
+# hostname to CONFIG_HOSTNAME
+
+set -eu
+
+# strip quotes fron CONFIG_HOSTNAME
+C_HOSTNAME=${CONFIG_HOSTNAME#\"}
+C_HOSTNAME=${C_HOSTNAME%\"}
+
+if [ -n "$C_HOSTNAME" ]; then
+    echo "${C_HOSTNAME}" >"$1/etc/hostname"
+    echo "127.0.0.1 localhost ${C_HOSTNAME}" > "$1/etc/hosts"
+fi

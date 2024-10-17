@@ -1,0 +1,10 @@
+[Unit]
+Description=Resizing or repartition primary device
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=/opt/unipi/scripts/unipi-resize-partition.sh
+
+[Install]
+WantedBy=local-fs.target

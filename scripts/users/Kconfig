@@ -1,0 +1,67 @@
+menu "Setup user root"
+
+config PASSWD
+	bool "Set password for user root"
+	depends on ! NOPASSWD
+	default n
+
+config PASSWD_FILE
+	string "File containing password (encrypted) for user root"
+	depends on PASSWD
+	default ""
+	help
+	  File must contain password in open text or in encrypted form.
+	  If password in file is not encrypted check.sh try to encrypt password
+	  using SHA256 method and store it back into the SAME file. In that case 
+	  file must be writable.
+
+config ROOTKEY
+	bool "Install authorized ssh key"
+	help
+	  Install public ssh key for root login via ssh
+
+config ROOTKEY_FILE
+	string "Set authorized ssh key"
+	depends on ROOTKEY
+	help
+	  Source file with public ssh key
+
+endmenu
+
+menuconfig UNIPI_USER
+	bool "Add user with sudo privileges"
+	default y
+
+if UNIPI_USER
+
+config UNIPI_USERNAME
+	string "Name of the user"
+	default "unipi"
+
+config UNIPI_PASSWD
+	bool "Set password for user"
+	default n
+
+config UNIPI_PASSWD_FILE
+	string "File containing password (encrypted) for user"
+	depends on UNIPI_PASSWD
+	default ""
+	help
+	  File must contain password in open text or in encrypted form.
+	  If password in file is not encrypted check.sh try to encrypt password
+	  using SHA256 method and store it back into the SAME file. In that case 
+	  file must be writable.
+
+config UNIPI_ROOTKEY
+	bool "Install authorized ssh key"
+	help
+	  Install public ssh key for login via ssh
+
+config UNIPI_ROOTKEY_FILE
+	string "File containing authorized ssh key"
+	depends on UNIPI_ROOTKEY
+	help
+	  Source file with public ssh key
+
+endif
+

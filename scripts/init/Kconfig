@@ -1,0 +1,35 @@
+
+choice
+	prompt "Init system"
+	default INIT_SYSTEMD
+
+config INIT_SYSTEMD
+	bool "Systemd"
+	help
+	  The default. Required for Unipi packages like unipi-os-configurator etc.
+
+config INIT_SYSV
+	bool "System-V like init"
+
+config INIT_RUNIT
+	bool "Runit init system"
+
+config INIT_BUSYBOX
+	bool "Busybox only"
+	help
+	  For minimalistic images like initrd.
+
+config INIT_NONE
+	bool "No init system"
+	help
+	  The resulting image will not be bootable unless something else takes care of
+	  creating /sbin/init
+
+endchoice
+
+config INIT_SYSTEM
+	string
+	default "systemd" if INIT_SYSTEMD
+	default "sysv" if INIT_SYSV
+	default "busybox" if INIT_BUSYBOX
+	default "none" if INIT_NONE

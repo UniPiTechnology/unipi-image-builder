@@ -1,0 +1,23 @@
+#!/bin/bash
+# Copyright (C) Unipi Technology spol. s r.o. - All Rights Reserved
+# SPDX-License-Identifier: MIT
+#
+# @author Miroslav Ondra <ondra@unipi.technology>
+# @author Unipi Technology <info@unipi.technology>
+# @date 2024-10-07
+
+# This is mmdebstrap customize hook to add user unipi
+# with sudo
+
+set -eu
+
+chroot "$1" adduser --disabled-password --gecos "" ${UNIPI_USERNAME} || true
+chroot "$1" groupadd -r i2c || true
+chroot "$1" groupadd -r spi || true
+chroot "$1" groupadd -r gpio || true
+chroot "$1" groupadd -r dialout || true
+chroot "$1" usermod -a -G i2c,spi,gpio,dialout ${UNIPI_USERNAME} || true
+
+cat <<EOF > "$1/etc/sudoers.d/${UNIPI_USERNAME}"
+${UNIPI_USERNAME} ALL=(ALL) NOPASSWD: ALL
+EOF

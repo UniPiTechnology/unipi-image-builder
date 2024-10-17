@@ -1,0 +1,26 @@
+#!/bin/bash
+# Copyright (C) Unipi Technology spol. s r.o. - All Rights Reserved
+# SPDX-License-Identifier: MIT
+#
+# @author Miroslav Ondra <ondra@unipi.technology>
+# @author Unipi Technology <info@unipi.technology>
+# @date 2024-10-07
+
+# This is mmdebstrap customize hook to add image identity files
+#      /etc/unipi_image_version
+#      /etc/unipi_image_name
+
+set -eu
+
+UNIPI_INFO_DIR="/usr/share/unipi-info"
+
+UNIPI_IMG_VER_FILE="/${UNIPI_INFO_DIR}/unipi_image_version"
+UNIPI_IMG_NAME_FILE="/${UNIPI_INFO_DIR}/unipi_image_name"
+
+mkdir -p "$1/${UNIPI_INFO_DIR}"
+
+echo "${IMAGE_VERSION-0.0}" > "$1/${UNIPI_IMG_VER_FILE}"
+echo "${IMAGE_NAME-unknown}" > "$1/${UNIPI_IMG_NAME_FILE}"
+
+ln -s "$UNIPI_IMG_VER_FILE" "$1/etc/unipi_image_version"
+ln -s "$UNIPI_IMG_NAME_FILE" "$1/etc/unipi_image_name"

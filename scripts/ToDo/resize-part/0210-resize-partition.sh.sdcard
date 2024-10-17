@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# expects fdisk to be installed
+echo "Installation of resize script and its systemd service companion"
+# installing of and enabling of .service is done in packaging phase
+
+mkdir -p /opt/unipi/scripts
+install -v -m 755 "$SCRIPT_FILES/unipi-resize-partition.sh" /opt/unipi/scripts
+
+#install -v -m 644 "$SCRIPT_FILES/unipi-resize-partition.service" /etc/systemd/system
+install -v -m 644 "$SCRIPT_FILES/populate@.service" /etc/systemd/system
+#systemctl daemon-reload
+#systemctl enable unipi-resize-partition
