@@ -1,8 +1,10 @@
 
 
 
-BUILDDIR = build
+BUILDDIR := build
 export BUILDDIR
+ADDONS := addons
+
 
 mmopt-y = --hook-dir=/usr/share/mmdebstrap/hooks/maybe-merged-usr
 mmpre-y = --customize-hook='mv -f "$$1/etc/resolv.conf" "$$1/etc/.resolv.conf"'
@@ -11,7 +13,13 @@ mmpost-y = --customize-hook='mv -f "$$1/etc/.resolv.conf" "$$1/etc/resolv.conf"'
 skip-n =
 components-y=
 
+Makefile.addons Kconfig.addons &: $(ADDONS)
+	( for i in $(wildcard $(ADDONS)/*/Makefile); do echo "include $$i"; done ) > Makefile.addons
+	( for i in $(wildcard $(ADDONS)/*/Kconfig); do echo "source \"$$i\""; done ) > Kconfig.addons
+
+
 include Makefile.inc
+include Makefile.addons
 
 BASEIMAGE_N = $(BUILDDIR)/$(subst ",,$(CONFIG_DEBIAN_SUITE))-$(subst ",,$(CONFIG_PRODUCT))
 #BASEIMAGE = $(BASEIMAGE_N).$(subst ",,$(IMAGE_FORMAT))
@@ -100,7 +108,7 @@ next:
 	    $(if $(V),--verbose,)
 
 
-menuconfig:
+menuconfig: Kconfig.addons
 	@kconfig-mconf Kconfig
 
 %_defconfig:

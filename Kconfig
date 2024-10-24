@@ -138,7 +138,7 @@ config ARCHITECTURE
 source "scripts/Kconfig"
 
 menu "Addons"
-source "addons/Kconfig"
+source "Kconfig.addons"
 endmenu
 
 menu "Cleaning actions"

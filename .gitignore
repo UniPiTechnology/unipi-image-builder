@@ -1,3 +1,5 @@
+Makefile.addons
+Kconfig.addons
 build/
 .config
 .config.old

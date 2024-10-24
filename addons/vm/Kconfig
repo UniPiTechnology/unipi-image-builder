@@ -1,4 +1,6 @@
 
+menu "Configure image for VM"
+
 config IMAGE_SIZE
 	int "Image size in MB"
 	depends on IMAGE_FORMAT_EXT2 || IMAGE_FORMAT_EXT4
@@ -11,3 +13,5 @@ config NOPASSWD
 	default n
 
 source "addons/vm/autologin/Kconfig"
+
+endmenu

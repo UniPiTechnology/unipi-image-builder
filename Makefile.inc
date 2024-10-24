@@ -1,5 +1,5 @@
 
-include .config
+-include .config
 
 BUILD_VARIANT = $(CONFIG_BUILD_VARIANT)
 export BUILD_VARIANT
@@ -25,4 +25,3 @@ mmopt-$(CONFIG_EXCLUDE_MAN_PAGES) += --dpkgopt=path-exclude=/usr/share/man/*
 IMAGE_FORMAT = $(CONFIG_IMAGE_FORMAT)
 IMAGE_SIZE = $(if $(CONFIG_IMAGE_SIZE),$(CONFIG_IMAGE_SIZE)M)
 
-include addons/Makefile

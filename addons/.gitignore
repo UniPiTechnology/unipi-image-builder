@@ -1,7 +1,5 @@
 /*
 !.gitignore
-!/Makefile
-!/Kconfig
 !/nodered
 !/raspberry
 !/vm/

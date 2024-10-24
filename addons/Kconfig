@@ -1,2 +1,0 @@
-source "addons/raspberry/Kconfig"
-source "addons/nodered/Kconfig"
