@@ -14,5 +14,15 @@ Frontend is based on Kconfig language and Makefiles and is used it like building
 - mmdebstrap
 - apt
 - make
+- qemu-system-arm
+- fusefat
 - kconfig-frontends-nox
-  
+
+
+On Debian system use this commands
+
+```
+  sudo apt install mmdebstrap make qemu-system-arm fusefat kconfig-frontends-nox
+  sudo update-binfmts --enable qemu-aarch64
+
+```
