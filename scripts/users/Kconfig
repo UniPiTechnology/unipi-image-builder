@@ -1,19 +1,18 @@
 menu "Setup user root"
 
-config PASSWD
+config ROOT_PASSWD
 	bool "Set password for user root"
 	depends on ! NOPASSWD
 	default n
 
-config PASSWD_FILE
-	string "File containing password (encrypted) for user root"
-	depends on PASSWD
+config ROOT_PASSWD_TEXT
+	string "Password (encrypted) for user root"
+	depends on ROOT_PASSWD
 	default ""
 	help
-	  File must contain password in open text or in encrypted form.
-	  If password in file is not encrypted check.sh try to encrypt password
-	  using SHA256 method and store it back into the SAME file. In that case 
-	  file must be writable.
+	  String contain password in open text or in encrypted form.
+	  If password is open, it will be encrypted using SHA256 method 
+	  and stored in the SAME variable.
 
 config ROOTKEY
 	bool "Install authorized ssh key"
@@ -42,15 +41,14 @@ config UNIPI_PASSWD
 	bool "Set password for user"
 	default n
 
-config UNIPI_PASSWD_FILE
-	string "File containing password (encrypted) for user"
+config UNIPI_PASSWD_TEXT
+	string "Password (encrypted) for user"
 	depends on UNIPI_PASSWD
 	default ""
 	help
-	  File must contain password in open text or in encrypted form.
-	  If password in file is not encrypted check.sh try to encrypt password
-	  using SHA256 method and store it back into the SAME file. In that case 
-	  file must be writable.
+	  String contain password in open text or in encrypted form.
+	  If password is open, it will be encrypted using SHA256 method 
+	  and stored in the SAME variable.
 
 config UNIPI_ROOTKEY
 	bool "Install authorized ssh key"

@@ -21,3 +21,12 @@ chroot "$1" usermod -a -G i2c,spi,gpio,dialout ${UNIPI_USERNAME} || true
 cat <<EOF > "$1/etc/sudoers.d/${UNIPI_USERNAME}"
 ${UNIPI_USERNAME} ALL=(ALL) NOPASSWD: ALL
 EOF
+
+if [ "$UNIPI_PASSWD" = "y" ]; then
+    if echo "$UNIPI_PASSWD_TEXT" | grep -q '^|[[:digit:]]|'; then
+        PW=$(echo "$UNIPI_PASSWD_TEXT" | sed 's/|/$/g')
+    else
+        PW=$(echo "$UNIPI_PASSWD_TEXT" | openssl passwd -5 -stdin)
+    fi
+    echo "$UNIPI_USERNAME:$PW" | /sbin/chpasswd -R "$1" -e
+fi
