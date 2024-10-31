@@ -20,7 +20,8 @@ fi
 
 PW=$(head -1 "$PASSWD_FILE")
 if echo "$PW" | grep -qv '^\$[[:digit:]]\$'; then
-    mkpasswd -m sha256crypt "$PW" > "$PASSWD_FILE" || exit 1
+    openssl passwd  -5 -stdin <<< "$PW" > "$PASSWD_FILE" || exit 1
+    #mkpasswd -m sha256crypt "$PW" > "$PASSWD_FILE" || exit 1
 elif [ $(wc -l <"$PASSWD_FILE") != "0" ]; then
     echo -n "$PW" > "$PASSWD_FILE"
 fi
