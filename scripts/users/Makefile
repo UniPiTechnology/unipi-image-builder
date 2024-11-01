@@ -1,23 +1,23 @@
 
 
-export ROOTKEY_FILE=$(subst ",,$(CONFIG_ROOTKEY_FILE))
-check-$(CONFIG_ROOTKEY) += scripts/users/check-ssh.sh
-pkgs-$(CONFIG_ROOTKEY) += openssh-server
-mmopt-$(CONFIG_ROOTKEY) += --customize-hook='mkdir -m700 -p "$$1/root/.ssh"'
-mmopt-$(CONFIG_ROOTKEY) += --customize-hook='upload "$(ROOTKEY_FILE)" /root/.ssh/authorized_keys'
+export ROOT_KEY_FILE=$(subst ",,$(CONFIG_ROOT_KEY_FILE))
+check-$(CONFIG_ROOT_KEY) += scripts/users/check-ssh.sh
+pkgs-$(CONFIG_ROOT_KEY) += openssh-server
+mmopt-$(CONFIG_ROOT_KEY) += --customize-hook='mkdir -m700 -p "$$1/root/.ssh"'
+mmopt-$(CONFIG_ROOT_KEY) += --customize-hook='upload "$(ROOT_KEY_FILE)" /root/.ssh/authorized_keys'
 
 include scripts/users/password/Makefile
 
-ifneq ($(CONFIG_UNIPI_USERNAME),"")
-export UNIPI_USERNAME=$(subst ",,$(CONFIG_UNIPI_USERNAME))
-export UNIPI_PASSWD=$(subst ",,$(CONFIG_UNIPI_PASSWD))
-export UNIPI_PASSWD_TEXT=$(subst ",,$(CONFIG_UNIPI_PASSWD_TEXT))
-mmopt-$(CONFIG_UNIPI_USER) += --customize-hook=scripts/users/unipi-user/customize
+ifneq ($(CONFIG_SUDO_USERNAME),"")
+export SUDO_USERNAME=$(subst ",,$(CONFIG_SUDO_USERNAME))
+export SUDO_PASSWD=$(subst ",,$(CONFIG_SUDO_PASSWD))
+export SUDO_PASSWD_TEXT=$(subst ",,$(CONFIG_SUDO_PASSWD_TEXT))
+mmopt-$(CONFIG_SUDO_USER) += --customize-hook=scripts/users/sudo-user/customize
 
-export UNIPI_ROOTKEY_FILE=$(subst ",,$(CONFIG_UNIPI_ROOTKEY_FILE))
-check-$(CONFIG_UNIPI_ROOTKEY) += scripts/users/unipi-user/check-ssh.sh
-pkgs-$(CONFIG_UNIPI_ROOTKEY) += openssh-server
-mmopt-$(CONFIG_UNIPI_ROOTKEY) += --customize-hook='mkdir -m700 -p "$$1/home/$(UNIPI_USERNAME)/.ssh"'
-mmopt-$(CONFIG_UNIPI_ROOTKEY) += --customize-hook='upload "$(UNIPI_ROOTKEY_FILE)" /home/$(UNIPI_USERNAME)/.ssh/authorized_keys'
-mmopt-$(CONFIG_UNIPI_ROOTKEY) += --customize-hook='chroot "$$1" chown -R $(UNIPI_USERNAME) /home/$(UNIPI_USERNAME)/.ssh'
+export SUDO_KEY_FILE=$(subst ",,$(CONFIG_SUDO_KEY_FILE))
+check-$(CONFIG_SUDO_KEY) += scripts/users/sudo-user/check-ssh.sh
+pkgs-$(CONFIG_SUDO_KEY) += openssh-server
+mmopt-$(CONFIG_SUDO_KEY) += --customize-hook='mkdir -m700 -p "$$1/home/$(SUDO_USERNAME)/.ssh"'
+mmopt-$(CONFIG_SUDO_KEY) += --customize-hook='upload "$(SUDO_KEY_FILE)" /home/$(SUDO_USERNAME)/.ssh/authorized_keys'
+mmopt-$(CONFIG_SUDO_KEY) += --customize-hook='chroot "$$1" chown -R $(SUDO_USERNAME) /home/$(SUDO_USERNAME)/.ssh'
 endif

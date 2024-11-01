@@ -14,50 +14,50 @@ config ROOT_PASSWD_TEXT
 	  If password is open, it will be encrypted using SHA256 method 
 	  and stored in the SAME variable.
 
-config ROOTKEY
+config ROOT_KEY
 	bool "Install authorized ssh key"
 	help
 	  Install public ssh key for root login via ssh
 
-config ROOTKEY_FILE
+config ROOT_KEY_FILE
 	string "Set authorized ssh key"
-	depends on ROOTKEY
+	depends on ROOT_KEY
 	help
 	  Source file with public ssh key
 
 endmenu
 
-menuconfig UNIPI_USER
+menuconfig SUDO_USER
 	bool "Add user with sudo privileges"
 	default y
 
-if UNIPI_USER
+if SUDO_USER
 
-config UNIPI_USERNAME
+config SUDO_USERNAME
 	string "Name of the user"
 	default "unipi"
 
-config UNIPI_PASSWD
+config SUDO_PASSWD
 	bool "Set password for user"
 	default n
 
-config UNIPI_PASSWD_TEXT
+config SUDO_PASSWD_TEXT
 	string "Password (encrypted) for user"
-	depends on UNIPI_PASSWD
+	depends on SUDO_PASSWD
 	default ""
 	help
 	  String contain password in open text or in encrypted form.
 	  If password is open, it will be encrypted using SHA256 method 
 	  and stored in the SAME variable.
 
-config UNIPI_ROOTKEY
+config SUDO_KEY
 	bool "Install authorized ssh key"
 	help
 	  Install public ssh key for login via ssh
 
-config UNIPI_ROOTKEY_FILE
+config SUDO_KEY_FILE
 	string "File containing authorized ssh key"
-	depends on UNIPI_ROOTKEY
+	depends on SUDO_KEY
 	help
 	  Source file with public ssh key
 
