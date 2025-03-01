@@ -1,5 +1,6 @@
 
 -include .config
+-include .format
 
 BUILD_VARIANT = $(CONFIG_BUILD_VARIANT)
 export BUILD_VARIANT
@@ -23,5 +24,4 @@ skip-$(CONFIG_CLEAN_MACHINE_ID) += --skip=cleanup/reproducible
 mmopt-$(CONFIG_EXCLUDE_MAN_PAGES) += --dpkgopt=path-exclude=/usr/share/man/*
 
 IMAGE_FORMAT = $(CONFIG_IMAGE_FORMAT)
-IMAGE_SIZE = $(if $(CONFIG_IMAGE_SIZE),$(CONFIG_IMAGE_SIZE)M)
-
+#IMAGE_SIZE = $(if $(CONFIG_IMAGE_SIZE),$(CONFIG_IMAGE_SIZE)M)

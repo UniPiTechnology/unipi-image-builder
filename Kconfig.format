@@ -1,0 +1,98 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file Documentation/kbuild/kconfig-language.txt in the
+# Linux kernel source tree.
+#
+mainmenu "Unipi Image Builder Output Format"
+
+choice
+	prompt "Output image format"
+	default IMAGE_FORMAT_TAR
+
+config IMAGE_FORMAT_TAR
+	bool "Chroot directory stored as tarball only"
+
+config IMAGE_FORMAT_EXT4
+	bool "Image for virtual machine VM (single ext4 fs)"
+
+#config IMAGE_FORMAT_EXT2
+#	bool "Image formated as ext2 fs"
+
+config IMAGE_FORMAT_SWU
+	bool "Image packed into SWupdate format"
+
+config IMAGE_FORMAT_RAW
+	bool "Raw disc image including partition table"
+
+config IMAGE_FORMAT_RAWMINI
+	bool "Raw disc image minimal - bootloader only"
+
+endchoice
+
+
+config IMAGE_FORMAT
+	string
+	default "tar" if IMAGE_FORMAT_TAR
+	default "ext4" if IMAGE_FORMAT_EXT4
+	default "ext2" if IMAGE_FORMAT_EXT2
+	default "zip" if IMAGE_FORMAT_SWU
+	default "raw" if IMAGE_FORMAT_RAW
+	default "raw" if IMAGE_FORMAT_RAWMINI
+
+config USE_PACKAGING
+	bool
+	default n if IMAGE_FORMAT_TAR
+	default n if IMAGE_FORMAT_EXT4
+	default n if IMAGE_FORMAT_EXT2
+	default y if IMAGE_FORMAT_SWU
+	default y if IMAGE_FORMAT_RAW
+	default y if IMAGE_FORMAT_RAWMINI
+
+choice
+	prompt "Partition table and volumes" if IMAGE_FORMAT_SWU || IMAGE_FORMAT_RAW || IMAGE_FORMAT_RAWMINI
+	default PARTITION_STD
+
+config PARTITION_STD
+	bool "Two ext4 partitions (root, boot)"
+	help
+	  Storage divided into two partitions. Small boot (200M)
+	  and rest of space for system and data as root.
+	  Both partitions formated as ext4
+
+config PARTITION_SINGLE
+	bool "Single partition only"
+	help
+	  Storage device contains single partition over the whole space.
+	  If platform like CM40 requires FAT boot partiton, there will
+	  be another boot partiton.
+
+config PARTITION_DUAL
+	bool "Dual boot ready (rootA, rootB, data)"
+	help
+	  Storage device divided into three partitions. RootA with system,
+	  empty RootB prepared for future update of system, data for persistent
+	  data. Size of RootA and RootB is 2,5GB each. The rest of storage space
+	  is alocated for data
+
+config PARTITION_BTR
+	bool "One btrfs partitions with 4 subvolumes"
+	help
+	  Don't use on MMC storage due to more extensive write rate comparing
+	  to ext4 fs
+
+config PARTITION_USER
+	bool "User defined partitions - file packaging/parts-user.yaml"
+	help
+	  Create your own definition of partition table an filesystem. 
+	  Requires to create file packaging/parts-user.yaml
+
+endchoice
+
+config PARTITIONS_YAML
+	string
+	default  "packaging/parts-std.yaml" if PARTITION_STD
+	default  "packaging/parts-single.yaml" if PARTITION_SINGLE
+	default "packaging/parts-dual.yaml" if PARTITION_DUAL
+	default "packaging/parts-btr.yaml" if PARTITION_BTR
+	default "packaging/parts-user.yaml" if PARTITION_USER
+

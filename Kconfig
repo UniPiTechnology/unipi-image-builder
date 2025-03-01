@@ -31,7 +31,6 @@ endchoice
 config DEBIAN_SUITE
 	string
 	prompt "Choose Debian release" if DEBIAN_SUITE_OTHER
-	default "buster" if DEBIAN_SUITE_OLDOLDSTABLE
 	default "bullseye" if DEBIAN_SUITE_OLDSTABLE
 	default "bookworm" if DEBIAN_SUITE_STABLE
 	default "trixie" if DEBIAN_SUITE_TESTING
@@ -163,33 +162,4 @@ config CLEAN_MACHINE_ID
 	  ssh server keys.
 
 endmenu
-
-choice
-	prompt "Output image format"
-	default IMAGE_FORMAT_EXT4
-
-config IMAGE_FORMAT_DIR
-	bool "Build chroot directory only"
-
-config IMAGE_FORMAT_TAR
-	bool "Chroot directory stored as tarball"
-
-config IMAGE_FORMAT_EXT4
-	bool "Image formated as ext4 fs"
-
-config IMAGE_FORMAT_EXT2
-	bool "Image formated as ext2 fs"
-
-config IMAGE_FORMAT_SWU
-	bool "Image packed into SWupdate format"
-
-endchoice
-
-config IMAGE_FORMAT
-	string
-	default "dir" if IMAGE_FORMAT_DIR
-	default "tar" if IMAGE_FORMAT_TAR
-	default "tar" if IMAGE_FORMAT_EXT4
-	default "tar" if IMAGE_FORMAT_EXT2
-	default "tar" if IMAGE_FORMAT_SWU
 
