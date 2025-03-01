@@ -1,0 +1,50 @@
+platform:
+    edge:
+        mmcdev: "/dev/mmcblk0"
+        start_sector: 2048
+        label: dos
+        boot_partition:
+            name: "firmware"
+            type: '0c'
+            size: 128M
+
+        boot_volume:
+            partition: "firmware"
+            fs_type: vfat
+            #mount_point: /boot/firmware
+            mount_point: /boot/altboot
+            automount: 1
+
+    g1:
+        mmcdev: "/dev/mmcblk1"
+        label: gpt
+        start_sector: 32768
+        hardware_compatibility: [ "1.0", "2.0" ]
+        uboot:
+            append_if_compatibility: 4
+            images:
+                - sourcefile: usr/lib/u-boot/unipi-g1/idbloader.img
+                  offset: 32k
+                - sourcefile: usr/lib/u-boot/unipi-g1/u-boot.itb
+                  offset: 8192k
+
+    zulu:
+        mmcdev: "/dev/mmcblk2"
+        label: gpt
+        start_sector: 16384
+        hardware_compatibility: [ "1.0", "2.0" ]
+        uboot:
+            images:
+                - sourcefile: usr/lib/u-boot/unipi-zulu/signed-flash.bin
+                  offset: 33k
+
+    axon:
+        mmcdev: "/dev/mmcblk1"
+        label: gpt
+        start_sector: 49152
+        uboot:
+            images:
+                - sourcefile: usr/lib/u-boot/unipi-axon/u-boot-sunxi-with-spl.bin
+                  offset: 8k
+        boot_partition:
+            size: 100M

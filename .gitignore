@@ -3,5 +3,8 @@ Kconfig.addons
 build/
 .config
 .config.old
+.format
+.format.old
 rootpw
 sshkey
+__pycache__

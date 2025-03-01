@@ -1,0 +1,41 @@
+
+{%- set ns = namespace() -%}
+{%- set ns.untar_dir = build_dir+"/"+volume.partition.name -%}
+{%- set ns.output_file = build_dir+"/"+volume.partition.name+"."+volume.fs_type -%}
+{%- set ns.gzip_file = ns.output_file+".gz" -%}
+{%- set ns.size_kb = volume.partition.size//2 | default(150000) -%}
+
+ARCHIVE_FILES += {{ns.gzip_file}}
+{%- if volume.fs_type=='ext4' or volume.fs_type=='ext2' %}
+{{volume.partition.name}}_excl = $(patsubst %,--exclude=%, {{excludes}})
+{{ns.gzip_file}}: {{tar}}
+	@rm -rf "{{ns.untar_dir}}"; rm -f "{{ns.output_file}}" "{{ns.gzip_file}}"; mkdir "{{ns.untar_dir}}"
+	@fakeroot /bin/sh -c '\
+	    set -eu;\
+	    tar x $({{volume.partition.name}}_excl) -f "{{tar}}" -C "{{ns.untar_dir}}" .{{volume.mount_point}};\
+	    if test -d {{ns.untar_dir}}/etc; then cp {{build_dir}}/etc/* {{ns.untar_dir}}/etc; fi;\
+	    SIZE=$$(du -s -b {{ns.untar_dir}}|cut -f 1); SIZE=$$((SIZE*105/100+10000000));\
+	    truncate -s ">$$SIZE" "{{ns.output_file}}";\
+	    /sbin/mke2fs -F -t {{volume.fs_type}} -d "{{ns.untar_dir}}{{volume.mount_point}}" "{{ns.output_file}}";\
+	    ' || rm -f "{{ns.output_file}}"
+	@rm -rf "{{ns.untar_dir}}"
+	@pigz "{{ns.output_file}}"
+
+{%- endif %}
+{%- if volume.fs_type=='vfat' %}
+{{volume.partition.name}}_excl = $(patsubst %,--exclude=%, {{excludes}})
+{{ns.gzip_file}}: {{tar}}
+	@rm -rf "{{ns.untar_dir}}"; rm -f "{{ns.output_file}}" "{{ns.gzip_file}}"; mkdir "{{ns.untar_dir}}"
+	@fakeroot /bin/sh -c '(\
+	    set -eu;\
+	    tar x $({{volume.partition.name}}_excl) -f "{{tar}}" -C "{{ns.untar_dir}}" .{{volume.mount_point}};\
+	    /sbin/mkfs.vfat -C "{{ns.output_file}}" {{ns.size_kb}})'
+	@mkdir "{{ns.untar_dir}}/mnt"
+	@fusefat -o rw+ "{{ns.output_file}}" "{{ns.untar_dir}}/mnt"
+	@cp -r "{{ns.untar_dir}}{{volume.mount_point}}/"* "{{ns.untar_dir}}/mnt"
+	@fusermount -u "{{ns.untar_dir}}/mnt"
+	@rm -rf "{{ns.untar_dir}}"
+	@pigz "{{ns.output_file}}"
+
+{%- endif %}
+

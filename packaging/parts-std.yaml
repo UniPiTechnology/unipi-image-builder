@@ -1,0 +1,20 @@
+partitions:
+    - &boot
+      name: boot
+      type: "Linux boot"
+      size: 200M
+      boot_flag: 1
+
+    - &root
+      name: root
+      type: "Linux root"
+
+volumes:
+    - partition: *root
+      mount_point: "/"
+      fs_type: "ext4"
+
+    - partition: *boot
+      mount_point: "/boot"
+      fs_type: "ext4"
+      automount: 1

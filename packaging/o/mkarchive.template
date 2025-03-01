@@ -1,0 +1,29 @@
+
+ARCHIVE_FILES := {{build_dir}}/sw-description {{build_dir}}/clearfs.sh
+
+{% for image in images -%}
+{{ image }}
+{% endfor %}
+
+{% for cpio in cpios -%}
+{{ cpio }}
+{% endfor -%}
+
+{# ###############
+{{build_dir}}/clearfs.sh: .format {{PLATFORM_YAML}} {{PARTITIONS_YAML}}
+	#sed 's#!!python/object:\w\+.\w\+\>##' -i a.yaml 
+	build-tools/build_clearfs.py -c "{{PLATFORM_YAML}}" -p "{{PARTITIONS_YAML}}" {{CONFIG_PLATFORM}} -o $@
+	chmod +x $@
+############### #}
+
+{{build_dir}}/clearfs.sh: .format {{PLATFORM_YAML}} {{PARTITIONS_YAML}}
+	j2 packaging/clearfs.sh.template {{build_dir}}/.format.yaml > $@
+
+{{build_dir}}/sw-description: {{build_dir}}/.format.yaml packaging/clearfs.sh.template
+	j2 packaging/sw-description.template {{build_dir}}/.format.yaml > $@
+
+
+archive: $(ARCHIVE_FILES)
+	( cd {{build_dir}} && for f in $(ARCHIVE_FILES); do\
+	    basename "$$f";\
+	  done | cpio -H newc -o ) > {{build_dir}}/archive.swu

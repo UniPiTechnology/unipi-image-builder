@@ -14,5 +14,9 @@ Frontend is based on Kconfig language and Makefiles and is used it like building
 - mmdebstrap
 - apt
 - make
+- fakeroot
 - kconfig-frontends-nox
-  
+- python3-jinja2
+- j2
+- pigz, zip
+- fusefat

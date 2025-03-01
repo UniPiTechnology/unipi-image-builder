@@ -1,0 +1,44 @@
+
+PREREQ_FILES := $(BUILDDIR)/.format.yaml $(BUILDDIR)/Makefile
+PREREQ_FILES += $(BUILDDIR)/archive $(BUILDDIR)/archive/etc
+ETC_FILES += $(BUILDDIR)/archive/etc/fstab $(BUILDDIR)/archive/etc/switchboot
+
+$(BUILDDIR)/archive:
+	@mkdir -p $@
+
+$(BUILDDIR)/archive/etc: $(BUILDDIR)/archive
+	@mkdir -p $@
+
+{% for image in images -%}
+{% with volume=image %}{% include "packaging/template.mkimage" %}{% endwith %}
+{% endfor %}
+
+{% for cpio in cpios -%}
+{# error - unsupported format #}
+{% endfor -%}
+
+$(BUILDDIR)/archive/cpart.sh: $(PREREQ_FILES) packaging/template.cpart
+	raw_files="$(RAW_FILES)" \
+	tar="{{tar}}" \
+	j2 -e '' packaging/template.cpart $(BUILDDIR)/.format.yaml > $@.tmp
+	mv $@.tmp $@
+	chmod +x $@
+
+$(BUILDDIR)/archive/etc/fstab: $(PREREQ_FILES) packaging/template.fstab
+	j2 -e '' packaging/template.fstab $(BUILDDIR)/.format.yaml > $@.tmp
+	mv $@.tmp $@
+
+$(BUILDDIR)/archive/etc/switchboot: $(PREREQ_FILES) packaging/template.switchboot
+	j2 -e '' packaging/template.switchboot $(BUILDDIR)/.format.yaml > $@.tmp
+	mv $@.tmp $@
+
+{%- if uboot.images | default(0) %}
+{%  include "packaging/template.mkuboot" %}
+{%  endif %}
+
+$(IMAGE): $(ARCHIVE_FILES) $(BUILDDIR)/archive/cpart.sh
+	rm -rf {{build_dir}}/boot
+	$(BUILDDIR)/archive/cpart.sh $@.tmp
+	mv $@.tmp $@
+	#rm -rf {{build_dir}}/boot
+	#rm -rf $(BUILDDIR)/archive

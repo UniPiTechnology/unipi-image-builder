@@ -1,0 +1,10 @@
+platform:
+        name: "zulu"
+        mmcdev: "/dev/mmcblk2"
+        label: gpt
+        start_sector: 16384
+        hardware_compatibility: [ "1.0", "2.0" ]
+        uboot:
+            images:
+                - sourcefile: usr/lib/u-boot/unipi-zulu/signed-flash.bin
+                  offset: 33k
