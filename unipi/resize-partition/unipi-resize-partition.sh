@@ -45,11 +45,20 @@ disable_service()
 
 case "$1" in
   create_partition)
-      create_partiton "$2" "$3"
+      create_partition "$2" "$3"
+      disable_service
       ;;
   grow_last_partition)
       grow_last_partition
+      disable_service
+      ;;
+  *)
+      echo
+      echo "Usage:  $0 [grow_last_partition | create_partition]"
+      echo
+      echo "  to extend last partition to the end of storage"
+      echo "  or to add new partition over the free space of storage"
+      echo
       ;;
 esac
 
-#disable_service

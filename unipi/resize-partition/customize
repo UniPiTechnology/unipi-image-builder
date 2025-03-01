@@ -1,0 +1,20 @@
+#!/bin/bash
+# Copyright (C) Unipi Technology spol. s r.o. - All Rights Reserved
+# SPDX-License-Identifier: MIT
+#
+# @author Miroslav Ondra <ondra@unipi.technology>
+# @author Unipi Technology <info@unipi.technology>
+# @date 2024-10-07
+
+# This is mmdebstrap customize hook that clear any ssh hostkeys and 
+# add service regenerate_ssh_host_keys to create new one after first run
+
+set -eu
+
+TARGET=$1
+chmod +x "$TARGET/opt/unipi/tools/unipi-resize-partition.sh"
+if test "${MMDEBSTRAP_MODE:-}" = chrootless; then
+    systemctl --root "$TARGET" enable unipi-resize-partition.service
+else
+    chroot "$TARGET" systemctl enable unipi-resize-partition.service
+fi
