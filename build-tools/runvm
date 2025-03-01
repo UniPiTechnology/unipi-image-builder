@@ -1,0 +1,24 @@
+#!/bin/bash
+
+VM_IMAGE="$1"
+VM_NAME="runvm $(basename \"$1\")"
+#KERNEL="-kernel x/Image.gz -initrd initrd.img"
+KERNEL="-kernel vmlinuz-6.6.31-v8+ -initrd initrd.img"
+
+qemu-system-aarch64 \
+ -append "root=/dev/vda rootfstype=ext4 rw TERM=xterm-256color console=ttyAMA0 earlycon=pl011,0x9000000" \
+ -netdev user,id=net0,hostfwd=tcp:127.0.0.1:2222-:22\
+ -device virtio-net-pci,netdev=net0 -nographic\
+ -device virtio-rng-pci,rng=rng0\
+ -object rng-random,filename=/dev/urandom,id=rng0\
+ -machine type=virt,gic-version=max\
+ -smp 4 -cpu max\
+ -m 1G\
+ $KERNEL \
+ -no-user-config\
+ -name "$VM_NAME"\
+ -drive "media=disk,format=raw,discard=unmap,file=$VM_IMAGE,if=virtio,cache=unsafe"
+
+
+# -append "root=/dev/vda rootfstype=ext4 rw TERM=xterm-256color kvm-arm.mode=protected earlycon" \
+ 
