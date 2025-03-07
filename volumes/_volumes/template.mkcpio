@@ -1,0 +1,18 @@
+
+{%- set ns = namespace() -%}
+{%- set ns.name = volume.subvol | default(volume.partition.name) -%}
+{%- set ns.output_file = build_dir+"/archive/"+ns.name+".cpio" -%}
+{%- set ns.excludes = ' '.join(volume.excludes) -%}
+
+{{ns.name}}_excl = $(patsubst %,--exclude=%, {{ns.excludes}})
+
+{{ns.output_file}}: {{tar}} $(PREQ_FILES) $(ETC_FILES)
+	@rm -rf "$@.d"; rm -f "$@"; mkdir "$@.d"
+	@fakeroot /bin/sh -c '\
+	    set -eu;\
+	    tar x $({{ns.name}}_excl) -f "{{tar}}" -C "$@.d" .{{volume.mount_point}};\
+	    if test -d $@.d/etc; then cp -r {{build_dir}}/archive/etc/* $@.d/etc; fi;\
+	    cd "$@.d";\
+	    find . | cpio -H newc -o\
+	    ' > "$@"
+	@rm -rf "$@.d"

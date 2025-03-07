@@ -1,9 +1,9 @@
 software = {
   version = "{{CONFIG_IMAGE_VERSION | default("undefined")}}";
   description = "Full OS Install for Unipi {{platform.name|upper}} based PLC/gateway";
+  hardware-compatibility: {{platform.hardware_compatibility |default('"1.0"') | replace("'",'"')}};
 
   {{platform.name}} = {
-    hardware-compatibility: {{platform.hardware_compatibility|default('["1.0"]')}};
     scripts:  (
          {
              filename = "clearfs.sh";

@@ -2,17 +2,18 @@ partitions:
     - &rootA
       name: rootA
       type: "Linux root"
-      size: 2500M
+      size: $CONFIG_PARTITION_DUAL_ROOT_SIZE(2500M)
       boot_flag: 1
       switchboot: "A"
 
     - name: rootB
       type: "Linux root"
-      size: 2500M
+      size: $CONFIG_PARTITION_DUAL_ROOT_SIZE(2500M)
       switchboot: "B"
 
     - &persist_data
       name: persist_data
+      size: $CONFIG_PARTITION_DUAL_DATA_SIZE(0)
       type: "Linux variable data"
 
 volumes:

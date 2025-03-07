@@ -61,10 +61,10 @@ config UNIPI_32_BIT
 
 config PLATFORM_YAML
 	string
-	default "packaging/unipi_edge.yaml" if EDGE
-	default "packaging/unipi_zulu.yaml" if SOC_IMX
-	default "packaging/unipi_g1.yaml" if G1
-	default "packaging/unipi_axon.yaml" if AXON
+	default "volumes/unipi_edge.yaml" if EDGE
+	default "volumes/unipi_zulu.yaml" if SOC_IMX
+	default "volumes/unipi_g1.yaml" if G1
+	default "volumes/unipi_axon.yaml" if AXON
 
 
 config UNIPI_ESSENTIAL

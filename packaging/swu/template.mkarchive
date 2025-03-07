@@ -1,0 +1,34 @@
+
+SWU_FILES := {{build_dir}}/archive.swu
+PREREQ_FILES := {{build_dir}}/.format.yaml {{build_dir}}/.Makefile.swu
+ETC_FILES += {{build_dir}}/archive/etc/fstab {{build_dir}}/archive/etc/default/switchboot
+ARCHIVE_PRE_FILES := {{build_dir}}/archive/sw-description {{build_dir}}/archive/clearfs.sh
+
+include {{build_dir}}/.Makefile.volumes
+
+ARCHIVE_VOLUME_FILES = $(patsubst %,%.gz, $(VOLUME_FILES))
+
+%.gz: %
+	pigz -k $(subst .gz,,$@)
+	@touch $@
+
+{{build_dir}}/archive.swu: $(ARCHIVE_PRE_FILES) $(ARCHIVE_VOLUME_FILES)
+	( cd {{build_dir}}/archive && \
+	  for f in $(ARCHIVE_PRE_FILES) $(ARCHIVE_VOLUME_FILES);\
+	  do basename "$$f";\
+	  done | cpio -H newc -o ) > $@
+	@rm -f $(ARCHIVE_VOLUME_FILES)
+
+archive: {{build_dir}}/archive.swu
+
+{% if uboot.images | default(0) %}
+SWU_FILES += {{build_dir}}/uboot.swu
+{% include "packaging/swu/template.mkuboot" %}
+{% endif %}
+
+{{image}}: $(SWU_FILES)
+	@rm -rf {{build_dir}}/boot
+	tar x -f "{{tar}}" -C "{{build_dir}}" ./boot/altboot
+	ln $(SWU_FILES) "{{build_dir}}/boot/altboot"
+	zip -Dj "$@" "{{build_dir}}/boot/altboot/"*
+	rm -rf {{build_dir}}/boot

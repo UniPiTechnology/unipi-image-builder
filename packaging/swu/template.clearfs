@@ -58,5 +58,3 @@ sync
 sleep 1
 sync
 
-#create_root_dev /dev/bootpart "{{platform.mmcdev}}p{#entry.number#}"
-#create_root_dev /dev/rootpart "{{platform.mmcdev}}p{#entry.number#}"

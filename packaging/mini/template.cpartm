@@ -15,14 +15,16 @@ PT_STARTS=()
 PT_IMAGES=()
 {% for i in raw_files.split() %}
 {%- set ns.im=i.split(":") %}
+{% if ns.im[0] == "1" %}
 PT_SIZES[{{ns.im[0]}}]=$(get_image_size {{ns.im[1]}})
 PT_IMAGES[{{ns.im[0]}}]="{{ns.im[1]}}"
+{% endif %}
 {%- endfor %}
 
 {% set ns.asize = platform.start_sector|int|default(32768, true) -%}
 set +u
 PT_SIZES[0]={{ns.asize}}
-{%- for entry in part_table %}{% if entry.size|default(0) > 0 %}
+{%- for entry in part_table %}{% if entry.size|default(0) > 0 and entry.part_num == 1 %}
 if [ -n "${PT_SIZES[{{entry.part_num}}]}" ] && [[ ${PT_SIZES[{{entry.part_num}}]} -gt $(({{entry.size}}+16)) ]]; then
     echo "Partition {{entry.part_num}}: 
      defined size {{entry.size}} sectors but
@@ -49,7 +51,7 @@ label: {{platform.label}}
 device: {{platform.mmcdev}}
 unit: sectors
 
-{% for entry in part_table -%}
+{% for entry in part_table if entry.part_num == 1 -%}
 {{platform.mmcdev}}p{{entry.part_num}} : start= ${PT_STARTS[{{entry.part_num}}]}, size=${PT_SIZES[{{entry.part_num}}]}, type={{entry.ptype[ns.use_gpt]}}
     {%-if entry.boot_flag%},{%if ns.use_gpt %} attrs="LegacyBIOSBootable" {%-else%} bootable {%-endif%}{%endif%}
 {%endfor-%}
@@ -71,6 +73,6 @@ tar xf {{tar}} -O {{image.sourcefile}} | dd of="$image_file" seek={{image.offset
 {% endfor %}
 {% endif %}
 
-for i in ${!PT_IMAGES[@]}; do
-    dd of="$image_file" if="${PT_IMAGES[$i]}" seek=${PT_STARTS[$i]} bs=512 conv=nocreat conv=notrunc
-done
+{% if platform.boot_partition.name | default(0) %}
+dd of="$image_file" if="${PT_IMAGES[1]}" seek=${PT_STARTS[1]} bs=512 conv=nocreat conv=notrunc
+{% endif %}

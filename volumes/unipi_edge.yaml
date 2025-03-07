@@ -13,4 +13,3 @@ platform:
             fs_type: vfat
             mount_point: /boot/firmware
             automount: 1
-

@@ -1,9 +1,9 @@
 software = {
   version = "{{UBOOT_VERSION}}";
   description = "U-boot update for Unipi {{platform.name|upper}} based PLC/gateway";
+  hardware-compatibility: {{platform.hardware_compatibility | default('"1.0"') | replace("'",'"')}};
 
   {{platform.name}} = {
-    hardware-compatibility: {{platform.hardware_compatibility | default("[1.0]") }};
     images: (
         {%- for entry in uboot.images -%}
         {%- if loop.index0 != 0 -%} , {%- endif %}

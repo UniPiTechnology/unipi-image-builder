@@ -3,7 +3,7 @@ BUILDDIR := build
 export BUILDDIR
 ADDONS := addons
 
-.DEFAULT_GOAL = $(IMAGE)
+.DEFAULT_GOAL = all
 
 mmopt-y = --hook-dir=/usr/share/mmdebstrap/hooks/maybe-merged-usr
 #mmpre-y = --hook-dir=/usr/share/mmdebstrap/hooks/file-mirror-automount
@@ -21,9 +21,9 @@ Makefile.addons Kconfig.addons &: $(ADDONS)
 include Makefile.inc
 include Makefile.addons
 
-BASEIMAGE := $(BUILDDIR)/$(subst ",,$(CONFIG_DEBIAN_SUITE))-$(subst ",,$(CONFIG_PRODUCT))
-IMAGE = $(BASEIMAGE).$(subst ",,$(CONFIG_IMAGE_FORMAT))
-
+IMAGE_NAME := $(subst ",,$(CONFIG_DEBIAN_SUITE))-$(subst ",,$(CONFIG_PRODUCT))
+BASEIMAGE := $(BUILDDIR)/$(IMAGE_NAME)
+IMAGES := $(BASEIMAGE).tar
 
 ifeq ($(CONFIG_UNIPI_32_BIT),y)
   ARCHITECTURE = armhf
@@ -36,10 +36,9 @@ endif
 endif
 
 export DEBIAN_SUITE=$(subst ",,$(CONFIG_DEBIAN_SUITE))
-#export PLATFORM_YAML = $(subst ",,$(CONFIG_PLATFORM_YAML))
-#export PARTITIONS_YAML = $(subst ",,$(CONFIG_PARTITIONS_YAML))
 
 -include packaging/Makefile
+-include volumes/Makefile
 
 %_defconfig:
 	kconfig-conf --defconfig=configs/$@ Kconfig
@@ -72,36 +71,7 @@ $(BASEIMAGE).tar: Makefile.inc .config #Makefile
 	@mv $(BASEIMAGE).tmp $(BASEIMAGE).tar
 
 
-#ifneq ($(CONFIG_PLATFORM_YAML),)
-#$(BUILDDIR)/.format.yaml: .format $(PLATFORM_YAML) $(PARTITIONS_YAML) .config
-#	build-tools/build_format.py\
-#	  -p $(PARTITIONS_YAML) \
-#	  -c $(PLATFORM_YAML) -o $@
-#endif
-
-#$(BUILDDIR)/Makefile: $(BUILDDIR)/.format.yaml packaging/template.mkarchive
-#	build_dir="$(BUILDDIR)" tar=$(BASEIMAGE).tar \
-#	  j2 -e "" packaging/template.mkarchive $(BUILDDIR)/.format.yaml > $(BUILDDIR)/Makefile
-
-
-
-#$(BASEIMAGE).ext2: $(BASEIMAGE).tar
-#	fakeroot build-tools/tar2ext.sh $< $@ ext2
-
-
-#$(BASEIMAGE).vfat: $(BASEIMAGE).tar
-#	@build-tools/tar2fat.sh $< $@
-
-
-$(BASEIMAGE).ext4: $(BASEIMAGE).tar
-	@fakeroot build-tools/tar2ext.sh $< $@
-
-vm: $(BASEIMAGE).ext4
-
-ifeq ($(CONFIG_USE_PACKAGING),y)
-$(IMAGE): $(BASEIMAGE).tar $(BUILDDIR)/Makefile
-	make -f $(BUILDDIR)/Makefile IMAGE=$(IMAGE) $(IMAGE)
-endif
+all: $(IMAGES)
 
 next:
 	@bash -c '$(patsubst %,build-tools/source-prepare.sh %;, $(sources-y))'

@@ -1,0 +1,41 @@
+
+{%- set ns = namespace() -%}
+{%- set ns.output_file = build_dir+"/archive/"+volume.partition.name+"."+volume.fs_type -%}
+{%- set ns.size_kb = volume.partition.size//2 | default(150000) -%}
+{%- set ns.excludes = ' '.join(volume.excludes) -%}
+
+{{volume.partition.name}}_excl = $(patsubst %,--exclude=%, {{ns.excludes}})
+
+{%- if volume.fs_type=='ext4' or volume.fs_type=='ext2' %}
+
+{{ns.output_file}}: {{tar}} $(PREQ_FILES) $(ETC_FILES)
+	@rm -rf "$@.d"; rm -f "$@"; mkdir "$@.d"
+	@echo "mke2fs in $@"
+	@fakeroot /bin/sh -c '\
+	    set -eu;\
+	    tar x $({{volume.partition.name}}_excl) -f "{{tar}}" -C "$@.d" .{{volume.mount_point}};\
+	    if test -d $@.d/etc; then cp -r {{build_dir}}/archive/etc/* $@.d/etc; fi;\
+	    SIZE=$$(du -s -b $@.d|cut -f 1); SIZE=$$((SIZE*110/100+10000000));\
+	    truncate -s ">$$SIZE" "$@";\
+	    /sbin/mke2fs -q -F -t {{volume.fs_type}} -d "$@.d{{volume.mount_point}}" "$@";\
+	    ' || rm -f "$@"
+	@rm -rf "$@.d"
+
+{%- endif %}
+{%- if volume.fs_type=='vfat' %}
+
+{{ns.output_file}}: {{tar}} $(PREQ_FILES) $(ETC_FILES)
+	@rm -rf "$@.d"; rm -f "$@"; mkdir "$@.d"
+	@fakeroot /bin/sh -c '(\
+	    set -eu;\
+	    tar x $({{volume.partition.name}}_excl) -f "{{tar}}" -C "$@.d" .{{volume.mount_point}};\
+	    /sbin/mkfs.vfat -C "{{ns.output_file}}" {{ns.size_kb}})'
+	@mkdir "$@.d/mnt"
+	@fusefat -o rw+ "{{ns.output_file}}" "$@.d/mnt"
+	@cp -r "$@.d{{volume.mount_point}}/"* "$@.d/mnt"\
+	 || ( fusermount -u "$@.d/mnt" && false )
+	@fusermount -u "$@.d/mnt"
+	@rm -rf "$@.d"
+
+{%- endif %}
+

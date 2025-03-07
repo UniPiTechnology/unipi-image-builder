@@ -3,6 +3,7 @@ import sys
 import os
 import logging
 import yaml
+import re
 from dataclasses import dataclass, field
 
 ptypes =  {
@@ -15,7 +16,15 @@ ptypes =  {
 vol_options = ["noatime", "nodiratime", "discard", "x-systemd.growfs"]
 vol_autooptions = ["noatime", "nodiratime", "discard", "x-systemd.growfs", "noauto", "x-systemd.automount"]
 
+re_env_default=re.compile(r'^\$([^(]+)\(([^)]*)\)')
+
 def num_to_int(number):
+	if number.startswith('$'):
+		m = re_env_default.match(number)
+		if m:
+			number = os.environ.get(m.group(1), m.group(2))
+	if not number:
+		return 0
 	if number[-1] in ('G','g'):
 		return int(number[:-1]) * (1024*1024*1024)
 	if number[-1] in ('M','m'):

@@ -1,0 +1,7 @@
+volume.partition.name
+volume.partition.size
+volume.partition.part_num
+
+volume.mount_point
+volume.fs_type
+volume.excludes
