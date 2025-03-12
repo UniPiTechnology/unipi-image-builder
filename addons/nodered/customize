@@ -3,5 +3,4 @@
 set -eu
 
 chroot "$1" npm install -g npm
-chroot "$1" npm install -g --unsafe-perm node-red@next
-
+chroot "$1" npm install -g node-red@next
