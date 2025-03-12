@@ -5,7 +5,7 @@ Simple, configurable tool to build Debian images. The tool is basically frontend
 Frontend is based on Kconfig language and Makefiles and is used it like building Linux kernel
 
 ``` 
-    make bookworm-patron_defconfig
+    make patron-nodered_defconfig
     make menuconfig
     make
 ```
