@@ -24,6 +24,7 @@ mmopt-$(CONFIG_UNIPI_RESIZE_PARTITION) += --customize-hook='upload unipi/resize-
 mmopt-$(CONFIG_UNIPI_RESIZE_PARTITION) += --customize-hook='unipi/resize-partition/customize'
 
 mmopt-$(CONFIG_UNIPI_UPDATE_REGDB) += --customize-hook='unipi/update-regdb/customize'
+pkgs-$(CONFIG_UNIPI_UPDATE_REGDB) += wireless-regdb
 
 mmopt-$(CONFIG_UNIPI_DISABLE_JOURNAL) += --customize-hook='unipi/disable-persistent-journal/customize'
 

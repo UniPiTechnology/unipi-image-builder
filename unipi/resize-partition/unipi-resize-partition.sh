@@ -3,7 +3,6 @@
 # fail whole script on any command
 set -e
 
-DEVICE=/dev/mmcblk0
 
 grow_last_partition()
 {
@@ -18,9 +17,9 @@ grow_last_partition()
   # no need to reboot, all should be done online
   fstype="$(lsblk -n -o FSTYPE "$PART")"
   if [ "$fstype" = "ext4" ]; then
-    resize2fs "$PART"
+    resize2fs "$PART" || true
   elif [ "$fstype" = "btrfs" ]; then
-    btrfs filesystem resize max /
+    btrfs filesystem resize max / || true
   fi
 }
 
@@ -42,6 +41,18 @@ disable_service()
     systemctl disable unipi-resize-partition
   fi
 }
+
+
+DEVICE=$(lsblk -pno pkname,MOUNTPOINT | awk '($2=="/") { print $1;}')  #'
+if ! [ -b "$DEVICE" ]; then
+    rootdev=$(awk '($2=="/") { print $1;}' /proc/mounts)   #'
+    DEVICE=$(lsblk -no pkname -p "$rootdev")
+fi
+#echo $DEVICE
+if ! [ -b "$DEVICE" ]; then
+    echo "Cannot determine root block device." >&2
+    exit
+fi
 
 case "$1" in
   create_partition)
