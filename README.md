@@ -7,6 +7,7 @@ Frontend is based on Kconfig language and Makefiles and is used it like building
 ``` 
     make patron-nodered_defconfig
     make menuconfig
+    make format
     make
 ```
 
@@ -14,6 +15,7 @@ Frontend is based on Kconfig language and Makefiles and is used it like building
 - mmdebstrap
 - apt
 - make
+- qemu-system-arm
 - fakeroot
 - kconfig-frontends-nox
 - python3-jinja2
@@ -21,6 +23,13 @@ Frontend is based on Kconfig language and Makefiles and is used it like building
 - pigz, zip
 - fusefat
 
+On Debian system use this commands
+
+```
+  sudo apt install mmdebstrap make qemu-system-arm fusefat kconfig-frontends-nox
+  sudo update-binfmts --enable qemu-aarch64
+
+```
 
 
 ## Makefile options
@@ -34,4 +43,31 @@ Frontend is based on Kconfig language and Makefiles and is used it like building
 - local-uploads-y
 - components-y     - list of apt components to install (main, test ...)
 
+## Customizing
 
+To customize the image build, call ```make menuconfig``` where you can choose from predefined options.
+The output format is selected by calling ```make format```. Make always creates tar file that contains all installed files.
+The desired images are than generated from it. All temporary files and images are placed into build directory.
+
+If you are not satisfied with options offered, you can create own addon to extend the installation options.
+
+# Create your addon
+
+Create own directory in directory addons
+ ```mkdir addons/myapp```
+
+Create in that directory Kconfig and Makefile
+
+addons/myapp/Kconfig
+```
+config MYAPP
+        bool "Install and customize MyApp"
+        default n
+```
+
+addons/myapp/Makefile
+```
+pkgs-$(CONFIG_MYAPP) += myapp,nginx
+mmopt-$(CONFIG_MYAPP) += --customize-hook='upload addons/myapp/my.cfg /etc/my.cfg'
+mmopt-$(CONFIG_MYAPP) += --hook-dir=addons/myapp/hook
+```
