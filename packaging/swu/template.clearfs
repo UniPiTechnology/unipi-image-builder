@@ -1,0 +1,60 @@
+#!/bin/sh
+# Copyright (C) Faster CZ, spol. s.r.o (Unipi Technology) - All Rights Reserved
+#
+# Unauthorized sharing, copying or modifying of this file or any of its parts
+# is strictly prohibited and can by done only with expressive permission from
+# the authors
+#
+# @author Martin Kudlacek <kudlacek@unipi.technology>
+# @author Miroslav Ondra <ondra@faster.cz>
+# @author UniPi <info@unipi.technology>
+# @date 2019-12-16
+
+############################################################################
+#
+#  this script is for Unipi {{ platform.name | upper }} PLC/Gateway !!
+#
+############################################################################
+
+# LEDs blinking in deploy (fast) mode
+. /scripts/init-premount/ledfunc.sh.in
+setled_deploy_mode
+
+
+# re-partition the eMMC
+
+ENDING_SEC=33
+
+MMC_SIZE_SEC=`blockdev --getsz "{{platform.mmcdev}}"`
+FULL_SIZE=$((${MMC_SIZE_SEC=}-${ENDING_SEC}))
+
+{# Check if fs+table contains vfat partition #}
+{%- set ns = namespace() -%}
+{%- set ns.asize = platform.start_sector|int|default(32768, true) %}
+{%- set ns.use_gpt = platform.label != 'dos' %}
+# Prepare temporary description file for fdisk
+cat << EOF > /tmp/partable
+label: {{platform.label}}
+device: {{platform.mmcdev}}
+unit: sectors
+
+{% for entry in part_table -%}
+{{platform.mmcdev}}p{{entry.part_num}} : start= {{ns.asize}} {%- set ns.asize=ns.asize+entry.size|default(0,true) -%}
+    , size={%if entry.size%} {{entry.size}} {%-else%} $((FULL_SIZE-{{ns.asize}})){%-endif-%}
+    , type={{entry.ptype[ns.use_gpt]}}
+    {%-if entry.boot_flag%},{%if ns.use_gpt %} attrs="LegacyBIOSBootable" {%-else%} bootable {%-endif%}{%endif%}
+{%endfor-%}
+EOF
+
+echo "I
+/tmp/partable
+p
+w
+" | fdisk "{{platform.mmcdev}}"
+
+rm /tmp/partable
+
+sync
+sleep 1
+sync
+

@@ -1,0 +1,32 @@
+#!/bin/bash
+# Copyright (C) Unipi Technology spol. s r.o. - All Rights Reserved
+# SPDX-License-Identifier: MIT
+#
+# @author Miroslav Ondra <ondra@unipi.technology>
+# @author Unipi Technology <info@unipi.technology>
+# @date 2024-10-07
+
+# This is mmdebstrap customize hook to install
+# regulatory data for wifi
+
+set -eu
+
+TARGET=$1
+
+# unipi kernels doesn't contain certificates for Debian generated regulatory.db.
+#    Package wireless-regdb  required by package crda to correctly set
+#    limits of wireless transcievers for different countries
+
+# This script force using upstream regdb
+
+if test "${MMDEBSTRAP_MODE:-}" = chrootless; then
+    if update-alternatives --root "$TARGET" --get-selections  | grep -q -Pe '^regulatory.db\s+auto\s+'; then
+        update-alternatives --root "$TARGET" \
+             --set-selections <<< "regulatory.db manual /lib/firmware/regulatory.db-upstream"
+    fi
+else
+    if chroot "$TARGET" update-alternatives --get-selections  | grep -q -Pe '^regulatory.db\s+auto\s+'; then
+        chroot "$TARGET" update-alternatives \
+             --set-selections <<< "regulatory.db manual /lib/firmware/regulatory.db-upstream"
+    fi
+fi

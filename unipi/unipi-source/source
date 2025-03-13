@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ "$DEBIAN_SUITE" = "trixie" ] ; then unset DEBIAN_SUITE ; fi
+
+
+if [ "$OEMZULU" = "y" ]; then
+echo "deb https://repo.unipi.technology/debian ${DEBIAN_SUITE-bookworm} .${PRODUCT}-main zulu-main main"
+else
+echo "deb https://repo.unipi.technology/debian ${DEBIAN_SUITE-bookworm} ${PRODUCT}-main main"
+fi
+echo "#TEMPORARY#"

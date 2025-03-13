@@ -1,0 +1,11 @@
+[Unit]
+Description=Resizing or repartition primary device
+DefaultDependencies=no
+ConditionVirtualization=No
+
+[Service]
+Type=oneshot
+ExecStart=/opt/unipi/tools/unipi-resize-partition.sh grow_last_partition
+
+[Install]
+WantedBy=local-fs.target

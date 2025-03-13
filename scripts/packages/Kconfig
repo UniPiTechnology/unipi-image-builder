@@ -1,0 +1,34 @@
+
+config SYSTOOLS
+	bool "System tools"
+	default y
+	help
+	  Install procps, less, fdisk, cron, lsb-release, cpio, systemd-timesyncd, e2fsprogs
+
+config NETTOOLS
+	bool "Networking tools"
+	default y
+	help
+	  Install iproute2, openssh-client, openssh-server, bridge-utils, iputils-ping, net-tools
+
+config TOOLS
+	bool "Usefull tools"
+	default y
+	help
+	  Install python3-minimal, xxd, gpiod, busybox, usbutils, wget
+
+menu "Text editors"
+
+config EDITOR_VIM
+	bool "Vim editor"
+	default y
+
+config EDITOR_NANO
+	bool "Nano editor"
+	default y
+
+config EDITOR_MC
+	bool "Midnight Commander"
+	default y
+
+endmenu

@@ -1,0 +1,25 @@
+partitions:
+    - &rootA
+      name: rootA
+      type: "Linux root"
+      size: 4000M
+      boot_flag: 1
+      switchboot: "A"
+
+    - name: rootB
+      type: "Linux root"
+      size: 4000M
+      switchboot: "B"
+
+    - &persist_data
+      name: persist_data
+      type: "Linux variable data"
+
+volumes:
+    - partition: *rootA
+      fs_type: ext4
+      mount_point: "/"
+
+    - partition: *persist_data
+      fs_type: ext4
+      mount_point: "/data"

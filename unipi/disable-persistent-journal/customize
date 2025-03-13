@@ -1,0 +1,17 @@
+#!/bin/bash
+# Copyright (C) Unipi Technology spol. s r.o. - All Rights Reserved
+# SPDX-License-Identifier: MIT
+#
+# @author Miroslav Ondra <ondra@unipi.technology>
+# @author UniPi <info@unipi.technology>
+# @date 2024-10-07
+
+# This is mmdebstrap customize hook that disables persistent
+# journal. Can be enabled later by renaming directory 
+# /var/log/journal.disabled -> /var/log/journal
+
+set -eu
+
+if [ -d "$1/var/log/journal" ]; then
+    mv "$1/var/log/journal" "$1/var/log/journal.disabled"
+fi

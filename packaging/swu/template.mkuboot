@@ -1,0 +1,25 @@
+{# ####################### U-BOOT.SWU ####################### #}
+
+UBOOT_FILES := {{build_dir}}/uboot/sw-description
+
+{{build_dir}}/uboot/sw-description: packaging/swu/template.sw-uboot {{tar}} {{build_dir}}/.format.yaml
+	@mkdir -p {{build_dir}}/uboot
+	UBOOT_VERSION=$$(tar xf {{tar}} -O ./var/lib/dpkg/status | grep -A 15 '^Package: .*u-boot' | sed -n 's/^Version:\s//p')\
+	 j2 -e '' $< {{build_dir}}/.format.yaml > $@.tmp
+	mv $@.tmp $@
+
+{% for image in uboot.images %}
+UBOOT_FILES += {{build_dir}}/uboot/{{image.basefile}}
+{{build_dir}}/uboot/{{image.basefile}}: {{tar}}
+	@mkdir -p {{build_dir}}/uboot
+	tar xf {{tar}} -O {{image.sourcefile}} > $@.tmp
+	mv $@.tmp $@
+{% endfor %}
+
+{{build_dir}}/uboot.swu: $(UBOOT_FILES)
+	( cd {{build_dir}}/uboot && for f in $(UBOOT_FILES); do\
+	    basename "$$f";\
+	  done | cpio -H newc -o ) > $@
+	rm -rf {{build_dir}}/uboot
+
+uboot: {{build_dir}}/uboot.swu

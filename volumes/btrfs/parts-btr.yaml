@@ -1,0 +1,30 @@
+partitions:
+    - &bdevice
+      name: bdevice
+      type: "Linux root"
+      boot_flag: 1
+      fs_type: "btrfs"
+      swu_format: "cpio"
+
+volumes:
+    - subvol: rootfs
+      partition: *bdevice
+      fs_type: "btrfs"
+      mount_point: "/"
+
+    - subvol: boot
+      partition: *bdevice
+      fs_type: "btrfs"
+      mount_point: "/boot"
+      automount: 1
+
+    - subvol: var
+      partition: *bdevice
+      fs_type: "btrfs"
+      mount_point: "/var"
+
+    - subvol: altboot
+      partition: *bdevice
+      fs_type: "btrfs"
+      mount_point: "/boot/altboot"
+      automount: 1

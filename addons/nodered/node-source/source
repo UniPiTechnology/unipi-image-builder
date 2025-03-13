@@ -1,0 +1,5 @@
+#!/bin/sh
+
+NODE_VERSION=node_20.x
+
+echo "deb https://deb.nodesource.com/$NODE_VERSION nodistro main"

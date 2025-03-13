@@ -1,0 +1,77 @@
+choice
+	prompt "Partition table and volumes" if IMAGE_FORMAT_SWU || IMAGE_FORMAT_RAW || IMAGE_FORMAT_RAWMINI
+	default PARTITION_STD
+
+config PARTITION_STD
+	bool "Two ext4 partitions (root, boot)"
+	help
+	  Storage divided into two partitions. Small boot (200M)
+	  and rest of space for system and data as root.
+	  Both partitions formated as ext4
+
+config PARTITION_SINGLE
+	bool "Single partition only"
+	help
+	  Storage device contains single partition over the whole space.
+	  If platform like CM40 requires FAT boot partiton, there will
+	  be another boot partiton.
+
+config PARTITION_DUAL
+	bool "Dual boot ready (rootA, rootB, data)"
+	help
+	  Storage device divided into three partitions. RootA with system,
+	  empty RootB prepared for future update of system, data for persistent
+	  data. Size of RootA and RootB is 2,5GB each. The rest of storage space
+	  is alocated for data
+
+config PARTITION_BTR
+	bool "One btrfs partitions with 4 subvolumes"
+	help
+	  Don't use on MMC storage due to more extensive write rate comparing
+	  to ext4 fs
+
+config PARTITION_USER
+	bool "User defined partitions - file packaging/parts-user.yaml"
+	help
+	  Create your own definition of partition table an filesystem. 
+	  Requires to create file packaging/parts-user.yaml
+
+endchoice
+
+config PARTITIONS_YAML
+	string
+	default "volumes/standard/parts-std.yaml" if PARTITION_STD
+	default "volumes/single-part/parts-single.yaml" if PARTITION_SINGLE
+	default "volumes/ab-system/parts-dual.yaml" if PARTITION_DUAL
+	default "volumes/btrfs/parts-btr.yaml" if PARTITION_BTR
+	default "volumes/user/parts-user.yaml" if PARTITION_USER
+
+if PARTITION_STD
+config PARTITION_STD_BOOT_SIZE
+	string "Size of boot partition"
+	default "200M"
+	help
+	  Set size of boot partition. For example 150M or 1G.
+
+config PARTITION_STD_ROOT_SIZE
+	string "Size of root partition"
+	default ""
+	help
+	  Set size of root partition in MB. If empty, partition will be 
+	  extended to maximum free space of storage.
+endif
+
+if PARTITION_DUAL
+config PARTITION_DUAL_ROOT_SIZE
+	string "Size of root partition"
+	default "2500M"
+	help
+	  Set size of both A and B root partitions. For example 2500M or 4G
+
+config PARTITION_DUAL_DATA_SIZE
+	string "Size of data partition"
+	default ""
+	help
+	  Set size of data partition. If empty, partition will be 
+	  extended to maximum free space of storage.
+endif

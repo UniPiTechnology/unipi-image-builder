@@ -1,0 +1,43 @@
+software = {
+  version = "{{CONFIG_IMAGE_VERSION | default("undefined")}}";
+  description = "Full OS Install for Unipi {{platform.name|upper}} based PLC/gateway";
+  hardware-compatibility: {{platform.hardware_compatibility |default('"1.0"') | replace("'",'"')}};
+
+  {{platform.name}} = {
+    scripts:  (
+         {
+             filename = "clearfs.sh";
+             type = "preinstall";
+             installed-directly = true;
+         }
+    );
+
+    images: (
+        {%- for entry in images -%}
+        {%- if loop.index0 != 0 -%} , {%- endif %}
+        {
+            filename = "{{entry.partition.name}}.{{entry.fs_type}}.gz";
+            device = "{{platform.mmcdev}}p{{entry.partition.part_num}}";
+            compressed = "zlib";
+            installed-directly = true;
+        }
+        {%- endfor %}
+    );
+
+    files: (
+        {%- for entry in cpios -%}
+        {%- if loop.index0 != 0 -%} , {%- endif %}
+        {
+            filename = "{{entry.subvol | default(entry.partition.name)}}.{{entry.fs_type}}.gz";
+            path = "/";
+            preserve-attributes = true;
+            type = "archive";
+            device = "{{platform.mmcdev}}p{{entry.partition.part_num}}";
+            filesystem = "{{entry.fs_type}}{{ ",subvol="+entry.subvol if entry.fs_type=="btrfs"}}";
+            compressed = "zlib";
+            installed-directly = true;
+        }
+        {%- endfor %}
+    );
+  };
+}

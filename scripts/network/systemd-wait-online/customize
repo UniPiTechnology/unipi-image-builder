@@ -1,0 +1,21 @@
+#!/bin/bash
+# Copyright (C) Unipi Technology spol. s r.o. - All Rights Reserved
+# SPDX-License-Identifier: MIT
+#
+# @author Miroslav Ondra <ondra@unipi.technology>
+# @author UniPi <info@unipi.technology>
+# @date 2024-10-07
+
+# This is mmdebstrap customize hook that modifies behaviour
+# of systemd-networkd-wait-online service (waits for all configured interfaces)
+# Service will wait for ANY configured network interface up
+
+set -eu
+
+mkdir -p "$1/etc/systemd/system/systemd-networkd-wait-online.service.d"
+
+cat <<EOF > "$1/etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf"
+[Service]
+ExecStart=
+ExecStart=/usr/lib/systemd/systemd-networkd-wait-online --any
+EOF

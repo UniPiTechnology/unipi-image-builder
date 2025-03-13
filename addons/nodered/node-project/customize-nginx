@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+rm -f "$1/etc/nginx/sites-enabled/default"
+ln -s "../sites-available/node-red" "$1/etc/nginx/sites-enabled/"
+

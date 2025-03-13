@@ -1,0 +1,14 @@
+platform:
+        name: "g1"
+        mmcdev: "/dev/mmcblk1"
+        label: gpt
+        start_sector: 32768
+        hardware_compatibility: [ "1.0", "2.0" ]
+        uboot:
+            images:
+                - sourcefile: usr/lib/u-boot/unipi-g1/idbloader.img
+                  basefile: idbloader.img4
+                  offset: 32k
+                - sourcefile: usr/lib/u-boot/unipi-g1/u-boot.itb
+                  basefile: u-boot.itb4
+                  offset: 8192k

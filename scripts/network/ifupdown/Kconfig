@@ -1,0 +1,5 @@
+
+config IFUPDOWN_IF
+	bool "Use ifupdown suite for networking setup"
+	depends on IFUPDOWN
+	default n

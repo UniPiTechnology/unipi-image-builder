@@ -1,0 +1,65 @@
+menu "Setup user root"
+
+config ROOT_PASSWD
+	bool "Set password for user root"
+	depends on ! NOPASSWD
+	default n
+
+config ROOT_PASSWD_TEXT
+	string "Password (encrypted) for user root"
+	depends on ROOT_PASSWD
+	default ""
+	help
+	  String contain password in open text or in encrypted form.
+	  If password is open, it will be encrypted using SHA256 method 
+	  and stored in the SAME variable.
+
+config ROOT_KEY
+	bool "Install authorized ssh key"
+	help
+	  Install public ssh key for root login via ssh
+
+config ROOT_KEY_FILE
+	string "Set authorized ssh key"
+	depends on ROOT_KEY
+	help
+	  Source file with public ssh key
+
+endmenu
+
+menuconfig SUDO_USER
+	bool "Add user with sudo privileges"
+	default y
+
+if SUDO_USER
+
+config SUDO_USERNAME
+	string "Name of the user"
+	default "unipi"
+
+config SUDO_PASSWD
+	bool "Set password for user"
+	default n
+
+config SUDO_PASSWD_TEXT
+	string "Password (encrypted) for user"
+	depends on SUDO_PASSWD
+	default ""
+	help
+	  String contain password in open text or in encrypted form.
+	  If password is open, it will be encrypted using SHA256 method 
+	  and stored in the SAME variable.
+
+config SUDO_KEY
+	bool "Install authorized ssh key"
+	help
+	  Install public ssh key for login via ssh
+
+config SUDO_KEY_FILE
+	string "File containing authorized ssh key"
+	depends on SUDO_KEY
+	help
+	  Source file with public ssh key
+
+endif
+

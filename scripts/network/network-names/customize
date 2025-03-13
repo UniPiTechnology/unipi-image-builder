@@ -1,0 +1,18 @@
+#!/bin/bash
+# Copyright (C) Unipi Technology spol. s r.o. - All Rights Reserved
+# SPDX-License-Identifier: MIT
+#
+# @author Miroslav Ondra <ondra@unipi.technology>
+# @author UniPi <info@unipi.technology>
+# @date 2024-10-07
+
+# This is mmdebstrap customize hook that disables
+# systemd renamimg of network interfaces
+
+set -eu
+
+# naming of network interfaces back to ethX
+ln -sf /dev/null "$1/etc/systemd/network/99-default.link"
+
+# naming of network interfaces back to ethX for usb cards too
+ln -sf /dev/null "$1/etc/systemd/network/73-usb-net-by-mac.link"

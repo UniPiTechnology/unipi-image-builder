@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -eu
+
+chroot "$1" npm install -g npm
+chroot "$1" npm install -g node-red@next

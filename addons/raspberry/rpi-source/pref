@@ -1,0 +1,11 @@
+Package: *
+Pin: release o=Raspberry Pi Foundation
+Pin-Priority: 50
+
+Package: firmware-brcm80211
+Pin: release o=Raspberry Pi Foundation
+Pin-Priority: 909
+
+Package: raspi-firmware
+Pin: release o=Raspberry Pi Foundation
+Pin-Priority: 909

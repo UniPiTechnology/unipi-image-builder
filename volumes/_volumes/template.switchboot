@@ -1,0 +1,5 @@
+{%- for entry in part_table -%}
+{%- if entry.switchboot | default(0) -%}
+{{entry.switchboot}}={{entry.part_num}}
+{% endif -%}
+{%- endfor %}

@@ -1,0 +1,9 @@
+LASTMAC=""
+CURRMAC=$(for i in /sys/class/net/*; do [ "$(cat $i/ifindex)" = "2" ] && cat "$i/address"; done)
+#"
+if [ "$LASTMAC" = "$CURRMAC" ]; then
+    return 0
+fi
+# write new mac to self
+sed 's/^LASTMAC=.*$/LASTMAC="'$CURRMAC'"/g' -i /etc/ssh/check-mac
+return 1

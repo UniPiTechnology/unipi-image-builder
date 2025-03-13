@@ -1,0 +1,10 @@
+
+config AUTOLOGIN
+	bool "Configure automatic root login"
+	depends on ! INIT_NONE && ! INIT_BUSYBOX
+	default n
+	help
+	  This is a mmdebstrap customize hook that configures automatic root login on a
+	  serial console. It also parses the TERM kernel cmdline and passes it as
+	  TERM to agetty. Since serial consoles do not transmit SIGWINCH, it causes
+	  the shell to run setterm -resize on interactive, serial logins.

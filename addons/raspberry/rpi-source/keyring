@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+curl -s https://archive.raspberrypi.org/debian/raspberrypi.gpg.key
+
