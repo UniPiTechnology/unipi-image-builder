@@ -45,8 +45,8 @@ On Debian system use this commands
 
 ## Customizing
 
-To customize the image build, call make menuconfig where you can choose from predefined options.
-The output format is selected by calling make format. Make always creates tar file that contains all installed files.
+To customize the image build, call ```make menuconfig``` where you can choose from predefined options.
+The output format is selected by calling ```make format```. Make always creates tar file that contains all installed files.
 The desired images are than generated from it. All temporary files and images are placed into build directory.
 
 If you are not satisfied with options offered, you can create own addon to extend the installation options.
@@ -54,7 +54,20 @@ If you are not satisfied with options offered, you can create own addon to exten
 # Create your addon
 
 Create own directory in directory addons
- '' mkdir addons/myapp ''
+ ```mkdir addons/myapp```
 
 Create in that directory Kconfig and Makefile
 
+addons/myapp/Kconfig
+```
+config MYAPP
+        bool "Install and customize MyApp"
+        default n
+```
+
+addons/myapp/Makefile
+```
+pkgs-$(CONFIG_MYAPP) += myapp,nginx
+mmopt-$(CONFIG_MYAPP) += --customize-hook='upload addons/myapp/my.cfg /etc/my.cfg'
+mmopt-$(CONFIG_MYAPP) += --hook-dir=addons/myapp/hook
+```
