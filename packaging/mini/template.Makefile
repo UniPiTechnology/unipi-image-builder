@@ -1,9 +1,9 @@
 
-PREREQ_FILES := $(BUILDDIR)/.format.yaml $(BUILDDIR)/Makefile.mini
+PREREQ_FILES := $(BUILDDIR)/.format.yaml $(BUILDDIR)/.Makefile.mini
 
 include $(BUILDDIR)/.Makefile.volumes
 
-$(BUILDDIR)/archive/cpartm.sh: packaging/mini/template.cpartm $(PREREQ_FILES)
+$(BUILDDIR)/archive/cpartm.sh: packaging/mini/template.cpartm $(PREREQ_FILES) $(VOLUME_FILES)
 	raw_files="$(RAW_FILES)" \
 	tar="{{tar}}" \
 	  j2 -e '' $< $(BUILDDIR)/.format.yaml > $@.tmp

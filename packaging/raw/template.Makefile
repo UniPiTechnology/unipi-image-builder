@@ -4,7 +4,7 @@ ETC_FILES += {{build_dir}}/archive/etc/fstab {{build_dir}}/archive/etc/default/s
 
 include {{build_dir}}/.Makefile.volumes
 
-{{build_dir}}/archive/cpart.sh: packaging/raw/template.cpart $(PREREQ_FILES) {{build_dir}}/.Makefile.volumes
+{{build_dir}}/archive/cpart.sh: packaging/raw/template.cpart $(PREREQ_FILES) $(VOLUME_FILES) {{build_dir}}/.Makefile.volumes
 	raw_files="$(RAW_FILES)" \
 	tar="{{tar}}" \
 	  j2 -e '' $< {{build_dir}}/.format.yaml > $@.tmp
