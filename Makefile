@@ -26,14 +26,15 @@ BASEIMAGE := $(BUILDDIR)/$(IMAGE_NAME)
 IMAGES := $(BASEIMAGE).tar
 
 ifeq ($(CONFIG_UNIPI_32_BIT),y)
-  ARCHITECTURE = armhf
+  ARCH = armhf
 else
 ifeq ($(CONFIG_UNIPI_SOURCE),y)
-  ARCHITECTURE = arm64
+  ARCH = arm64
 else
-  ARCHITECTURE = $(CONFIG_ARCHITECTURE)
+  ARCH = $(CONFIG_ARCHITECTURE)
 endif
 endif
+ARCHITECTURE := $(patsubst %,--architecture %, $(ARCH) $(CONFIG_FOREIGN_ARCHITECTURE))
 
 export DEBIAN_SUITE=$(subst ",,$(CONFIG_DEBIAN_SUITE))
 
@@ -55,7 +56,7 @@ $(BASEIMAGE).tar: Makefile.inc .config #Makefile
 	HOME=/tmp /usr/bin/mmdebstrap\
 	    --variant=$(BUILD_VARIANT)\
 	    --format=tar\
-	    --architecture=$(ARCHITECTURE)\
+	    $(ARCHITECTURE)\
 	    $(patsubst %,--components=%, $(components-y))\
 	    $(patsubst %,--include=%, $(pkgs-y))\
 	    $(patsubst %,--setup-hook=$(BUILDDIR)/.%, $(notdir $(sources-y)))\
