@@ -12,15 +12,24 @@
 
 set -eu
 
+if [ "$IMAGE_VERSION" = "" ]; then
+    IMAGE_VERSION=0.0
+fi
+
+if [ "$IMAGE_NAME" = "" ]; then
+    IMAGE_NAME=unknown
+fi
+
 UNIPI_INFO_DIR="/usr/share/unipi-info"
 
-UNIPI_IMG_VER_FILE="/${UNIPI_INFO_DIR}/unipi_image_version"
-UNIPI_IMG_NAME_FILE="/${UNIPI_INFO_DIR}/unipi_image_name"
+UNIPI_IMG_VER_FILE="${UNIPI_INFO_DIR}/unipi_image_version"
+UNIPI_IMG_NAME_FILE="${UNIPI_INFO_DIR}/unipi_image_name"
 
 mkdir -p "$1/${UNIPI_INFO_DIR}"
 
-echo "${IMAGE_VERSION-0.0}" > "$1/${UNIPI_IMG_VER_FILE}"
-echo "${IMAGE_NAME-unknown}" > "$1/${UNIPI_IMG_NAME_FILE}"
+echo "${IMAGE_VERSION}" > "$1/${UNIPI_IMG_VER_FILE}"
+echo "${IMAGE_NAME}" > "$1/${UNIPI_IMG_NAME_FILE}"
+rm -f "$1/etc/unipi_image_version" "$1/etc/unipi_image_name"
 
-ln -s "$UNIPI_IMG_VER_FILE" "$1/etc/unipi_image_version"
-ln -s "$UNIPI_IMG_NAME_FILE" "$1/etc/unipi_image_name"
+ln -s "..$UNIPI_IMG_VER_FILE" "$1/etc/unipi_image_version"
+ln -s "..$UNIPI_IMG_NAME_FILE" "$1/etc/unipi_image_name"
