@@ -18,7 +18,7 @@ fi
 SRCTAR=$1
 DST=$2
 EXT=${3-ext4}
-SIZE=$(($(stat -c %s $SRCTAR)*11/10))
+SIZE=$(($(stat -c %s $SRCTAR)*15/10))
 
 truncate -s ">${SIZE}" "$DST"
 
