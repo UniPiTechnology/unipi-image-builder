@@ -134,4 +134,8 @@ config UNIPI_HAVEGED
 	bool "Install haveged daemon"
 	default n
 
+config UNIPI_TPM2
+	bool "Install TPM2 tools"
+	default y if EDGE
+
 endif

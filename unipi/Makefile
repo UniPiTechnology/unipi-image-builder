@@ -31,6 +31,8 @@ mmopt-$(CONFIG_UNIPI_DISABLE_JOURNAL) += --customize-hook='unipi/disable-persist
 pkgs-$(CONFIG_UNIPI_HAVEGED) += haveged
 mmopt-$(CONFIG_UNIPI_HAVEGED) += --customize-hook='unipi/haveged/customize'
 
+pkgs-$(CONFIG_UNIPI_TPM2) += tpm2-tools
+
 export IMAGE_NAME
 export IMAGE_VERSION
 mmopt-$(CONFIG_UNIPI_IMAGE_VERSION) += --customize-hook='unipi/image-version/customize'
