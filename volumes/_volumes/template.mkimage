@@ -29,12 +29,8 @@
 	@fakeroot /bin/sh -c '(\
 	    set -eu;\
 	    tar x $({{volume.partition.name}}_excl) -f "{{tar}}" -C "$@.d" .{{volume.mount_point}};\
-	    /sbin/mkfs.vfat -C "{{ns.output_file}}" {{ns.size_kb}})'
-	@mkdir "$@.d/mnt"
-	@fusefat -o rw+ "{{ns.output_file}}" "$@.d/mnt"
-	@cp -r "$@.d{{volume.mount_point}}/"* "$@.d/mnt"\
-	 || ( fusermount -u "$@.d/mnt" && false )
-	@fusermount -u "$@.d/mnt"
+	    /sbin/mkfs.vfat -C "{{ns.output_file}}" "{{ns.size_kb}}"; \
+	    mcopy -sm -i "{{ns.output_file}}" "$@.d{{volume.mount_point}}/"* :: )'
 	@rm -rf "$@.d"
 
 {%- endif %}
