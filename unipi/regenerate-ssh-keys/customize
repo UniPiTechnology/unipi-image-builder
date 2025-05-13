@@ -20,3 +20,10 @@ else
 fi
 
 rm -f "$TARGET/etc/ssh/ssh_host"*
+
+mkdir -p $TARGET/etc/systemd/system/sshd-keygen.service.d
+cat > $TARGET/etc/systemd/system/sshd-keygen.service.d/override.conf <<EOF
+[Unit]
+ConditionFirstBoot=
+ConditionPathExists=/run/regenerate-ssh
+EOF
