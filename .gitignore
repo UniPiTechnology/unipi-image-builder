@@ -1,6 +1,7 @@
 Makefile.addons
 Kconfig.addons
 build/
+tmp/
 .config
 .config.old
 .format

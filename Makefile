@@ -5,6 +5,9 @@ ADDONS := addons
 
 .DEFAULT_GOAL = all
 
+BUILDTMPDIR=tmp
+export BUILDTMPDIR
+
 mmopt-y = --hook-dir=/usr/share/mmdebstrap/hooks/maybe-merged-usr
 #mmpre-y = --hook-dir=/usr/share/mmdebstrap/hooks/file-mirror-automount
 mmpre-y += --customize-hook='mv -f "$$1/etc/resolv.conf" "$$1/etc/.resolv.conf"'
@@ -22,7 +25,7 @@ include Makefile.inc
 include Makefile.addons
 
 IMAGE_NAME := $(subst ",,$(CONFIG_DEBIAN_SUITE))-$(subst ",,$(CONFIG_PRODUCT))
-BASEIMAGE := $(BUILDDIR)/$(IMAGE_NAME)
+BASEIMAGE := $(BUILDDIR)/$(IMAGE_NAME)$(if $(IMAGE_VERSION),_$(IMAGE_VERSION),)
 IMAGES := $(BASEIMAGE).tar
 
 ifeq ($(CONFIG_UNIPI_32_BIT),y)
@@ -59,7 +62,7 @@ $(BASEIMAGE).tar: Makefile.inc .config #Makefile
 	    $(ARCHITECTURE)\
 	    $(patsubst %,--components=%, $(components-y))\
 	    $(patsubst %,--include=%, $(pkgs-y))\
-	    $(patsubst %,--setup-hook=$(BUILDDIR)/.%, $(notdir $(sources-y)))\
+	    $(patsubst %,--setup-hook=$(BUILDTMPDIR)/.%, $(notdir $(sources-y)))\
 	    $(local-upload)\
 	    $(local-pkgs)\
 	    $(mmpre-y)\
