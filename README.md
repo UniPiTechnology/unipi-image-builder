@@ -26,8 +26,8 @@ Frontend is based on Kconfig language and Makefiles and is used it like building
 On Debian system use this commands
 
 ```
-  sudo apt install mmdebstrap make mtools kconfig-frontends-nox qemu-system-arm binfmt-support
-  sudo apt install python3-yaml j2cli e2fsprogs pigz dosfstools cpio zip fdisk
+  sudo apt install mmdebstrap make fakechroot kconfig-frontends-nox qemu-system-arm binfmt-support
+  sudo apt install python3-yaml j2cli e2fsprogs pigz dosfstools cpio zip fdisk mtools
   sudo update-binfmts --enable qemu-aarch64
 
 ```
