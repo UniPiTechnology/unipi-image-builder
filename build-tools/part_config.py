@@ -13,8 +13,9 @@ ptypes =  {
     'BIOS boot':  ('0c', '21686148-6449-6E6F-744E-656564454649'),
     '':           ('83', '0FC63DAF-8483-4772-8E79-3D69D8477DE4'),
 }
-vol_options = ["noatime", "nodiratime", "discard", "x-systemd.growfs"]
-vol_autooptions = ["noatime", "nodiratime", "discard", "x-systemd.growfs", "noauto", "x-systemd.automount"]
+vol_options = ["noatime", "nodiratime", "discard"]
+vol_autooptions = ["noatime", "nodiratime", "discard", "noauto", "x-systemd.automount"]
+vol_grow_option = "x-systemd.growfs"
 
 re_env_default=re.compile(r'^\$([^(]+)\(([^)]*)\)')
 
@@ -106,6 +107,8 @@ def Volume(data):
 	if 'subvol' in data:
 		opt = [f"subvol={data['subvol']}"]
 		opt.extend(data["options"])
+		if data["fs_type"] in ("ext4",):
+			opt.append(vol_grow_option)
 		data["options"] = opt
 	return data
 
