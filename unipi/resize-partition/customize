@@ -12,7 +12,7 @@
 set -eu
 
 TARGET=$1
-chmod +x "$TARGET/opt/unipi/tools/unipi-resize-partition.sh"
+chmod +x "$TARGET/usr/lib/unipi/unipi-resize-partition.sh"
 if test "${MMDEBSTRAP_MODE:-}" = chrootless; then
     systemctl --root "$TARGET" enable unipi-resize-partition.service
 else

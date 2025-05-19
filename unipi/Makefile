@@ -18,7 +18,7 @@ mmopt-$(CONFIG_UNIPI_REGENERATE_SSH) += --customize-hook='upload unipi/regenerat
 mmopt-$(CONFIG_UNIPI_REGENERATE_SSH) += --customize-hook='upload unipi/regenerate-ssh-keys/check-mac /etc/ssh/check-mac'
 mmopt-$(CONFIG_UNIPI_REGENERATE_SSH) += --customize-hook='unipi/regenerate-ssh-keys/customize'
 
-mmopt-$(CONFIG_UNIPI_RESIZE_PARTITION) += --customize-hook='upload unipi/resize-partition/unipi-resize-partition.sh /opt/unipi/tools/unipi-resize-partition.sh'
+mmopt-$(CONFIG_UNIPI_RESIZE_PARTITION) += --customize-hook='upload unipi/resize-partition/unipi-resize-partition.sh /usr/lib/unipi/unipi-resize-partition.sh'
 mmopt-$(CONFIG_UNIPI_RESIZE_PARTITION) += --customize-hook='upload unipi/resize-partition/unipi-resize-partition.service /etc/systemd/system/unipi-resize-partition.service'
 mmopt-$(CONFIG_UNIPI_RESIZE_PARTITION) += --customize-hook='upload unipi/resize-partition/populate@.service /etc/systemd/system/populate@.service'
 mmopt-$(CONFIG_UNIPI_RESIZE_PARTITION) += --customize-hook='unipi/resize-partition/customize'
