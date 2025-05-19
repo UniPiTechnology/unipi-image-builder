@@ -104,11 +104,11 @@ def Volume(data):
 		data["options"] = vol_autooptions
 	else:
 		data["options"] = vol_options
+	if data["fs_type"] in ("ext4",):
+		data["options"].append(vol_grow_option)
 	if 'subvol' in data:
 		opt = [f"subvol={data['subvol']}"]
 		opt.extend(data["options"])
-		if data["fs_type"] in ("ext4",):
-			opt.append(vol_grow_option)
 		data["options"] = opt
 	return data
 
