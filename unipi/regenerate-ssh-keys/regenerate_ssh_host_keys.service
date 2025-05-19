@@ -6,7 +6,6 @@ Before=sshd-keygen.service
 Type=oneshot
 ExecStartPre=-/bin/bash -c "source /etc/ssh/check-mac 2>/dev/null || /bin/rm -f -v /etc/ssh/ssh_host_*_key*"
 ExecStart=/bin/touch /run/regenerate-ssh
-ExecStartPost=/bin/systemctl disable regenerate_ssh_host_keys
 
 [Install]
 WantedBy=multi-user.target
