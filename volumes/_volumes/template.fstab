@@ -4,7 +4,7 @@
 {% for vol in volumes -%}
 {%- set ns.options = ','.join(vol.options) -%} 
 {%- if vol.mount_point == "/" -%}
-/dev/root / {{vol.fs_type}} {{ns.options}} 0 1
+/dev/root / {{vol.fs_type}} {{ns.options}} 0 0
 {%- else -%}
 {{ns.device}}{{vol.partition.part_num}} {{vol.mount_point}} {{vol.fs_type}} {{ns.options}} 0 2
 {%- endif %}

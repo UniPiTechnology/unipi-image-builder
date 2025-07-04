@@ -30,6 +30,10 @@ config IMAGE_FORMAT_RAWMINI
 	bool "Raw disc image minimal - bootloader only"
 	select IMAGE_FORMAT_TAR
 
+config IMAGE_FORMAT_RAWPART
+	bool "Raw partitions in files"
+	select IMAGE_FORMAT_TAR
+
 #endchoice
 
 config USE_PACKAGING
@@ -38,11 +42,13 @@ config USE_PACKAGING
 	default y if IMAGE_FORMAT_SWU
 	default y if IMAGE_FORMAT_RAW
 	default y if IMAGE_FORMAT_RAWMINI
+	default y if IMAGE_FORMAT_RAWPART
 
 config USE_VOLUMES
 	bool
 	default y if IMAGE_FORMAT_SWU
 	default y if IMAGE_FORMAT_RAW
 	default y if IMAGE_FORMAT_RAWMINI
+	default y if IMAGE_FORMAT_RAWPART
 
 source "volumes/Kconfig"

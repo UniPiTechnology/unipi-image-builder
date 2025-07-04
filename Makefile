@@ -83,15 +83,15 @@ next:
 	    --skip=check/empty,$(SKIP)\
 	    --variant=custom\
 	    --format=tar\
-	    --architecture=$(ARCHITECTURE)\
+	    $(ARCHITECTURE)\
 	    --setup-hook='mmtarfilter "--path-exclude=/dev/*" < $(BASEIMAGE).tar | tar -C "$$1" -x'\
-	    --setup-hook=build-tools/source-pre.sh\
-	    $(patsubst %,--setup-hook=$(BUILDDIR)/.%, $(notdir $(sources-y)))\
 	    $(ADDON)\
 	    --customize-hook=build-tools/source-post.sh\
 	    $(CONFIG_DEBIAN_SUITE) $(BASEIMAGE)-1.tar\
 	    $(if $(V),--verbose,)
 
+#	    --setup-hook=build-tools/source-pre.sh\
+#	    $(patsubst %,--setup-hook=$(BUILDDIR)/.%, $(notdir $(sources-y)))\
 
 menuconfig: Kconfig.addons
 	@kconfig-mconf Kconfig
