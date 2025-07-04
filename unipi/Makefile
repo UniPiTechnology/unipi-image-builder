@@ -14,10 +14,14 @@ pkgs-$(CONFIG_UNIPI_RECOMMENDED) += unipi-flash-diag,unipi-firmware-tools,unipi-
 
 mmopt-$(CONFIG_UNIPI_LOCALES) += --customize-hook='unipi/locales/customize'
 
+ifeq ($(CONFIG_DEBIAN_SUITE), "bookworm")
+mmopt-$(CONFIG_UNIPI_REGENERATE_SSH) += --customize-hook='upload unipi/regenerate-ssh-keys/sshd-keygen.service /usr/lib/systemd/system/sshd-keygen.service'
+endif
 mmopt-$(CONFIG_UNIPI_REGENERATE_SSH) += --customize-hook='upload unipi/regenerate-ssh-keys/regenerate_ssh_host_keys.service /etc/systemd/system/regenerate_ssh_host_keys.service'
 mmopt-$(CONFIG_UNIPI_REGENERATE_SSH) += --customize-hook='upload unipi/regenerate-ssh-keys/check-mac /etc/ssh/check-mac'
 mmopt-$(CONFIG_UNIPI_REGENERATE_SSH) += --customize-hook='unipi/regenerate-ssh-keys/customize'
 
+mmopt-$(CONFIG_UNIPI_RESIZE_PARTITION) += --customize-hook='mkdir -p "$$1"/usr/lib/unipi'
 mmopt-$(CONFIG_UNIPI_RESIZE_PARTITION) += --customize-hook='upload unipi/resize-partition/unipi-resize-partition.sh /usr/lib/unipi/unipi-resize-partition.sh'
 mmopt-$(CONFIG_UNIPI_RESIZE_PARTITION) += --customize-hook='upload unipi/resize-partition/unipi-resize-partition.service /etc/systemd/system/unipi-resize-partition.service'
 mmopt-$(CONFIG_UNIPI_RESIZE_PARTITION) += --customize-hook='upload unipi/resize-partition/populate@.service /etc/systemd/system/populate@.service'
