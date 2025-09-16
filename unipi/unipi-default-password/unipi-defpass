@@ -1,0 +1,99 @@
+#!/bin/sh
+
+unipi_password_set() {
+    local PWD_HASH=$1
+    
+    if [ "$PWD_HASH" = "legacy" ]; then
+        usermod ${USER} -p '$y$j9T$pi9lbl3bLQsb2OYu5G/7d1$7A8hVYSxM.RSbyaSbVNSvKrf2Eh3woivl2SE1gfFl79'
+    else
+        usermod ${USER} -p "$PWD_HASH"
+    fi
+    
+    if [ "$2" = "1" ]; then
+        passwd -e ${USER} >/dev/null
+    fi
+}
+
+unipi_sn_check() {
+    # Return codes:
+    # 0 - new SN
+    # 1 - invalid SN
+    # 2 - old SN
+    
+    local UNIPI_SN=$1
+    
+    case "$UNIPI_SN" in
+        ''|*[!0-9]*)
+            return 1
+        ;;
+        *)
+            :
+        ;;
+    esac
+    
+    if [ $UNIPI_SN -lt 0 ]; then return 1
+    elif [ $UNIPI_SN -lt 1253800000 ]; then return 2
+    elif [ $UNIPI_SN -lt 2000000000 ]; then return 0
+    elif [ $UNIPI_SN -lt 2253800000 ]; then return 2
+    else return 0
+    fi
+}
+
+unipi_hash_set() {
+
+    local GPP="/dev/mmcblk0gp0" # todo: get this from symlink
+    local GPPMT="/run/unipi-plc/gpp-factory"
+
+    if [ ! -b "$GPP" ]; then
+        echo "Error: GPP does not exist."
+        exit 1
+    fi
+
+    trap "umount $GPPMT && rmdir $GPPMT" EXIT
+    mount -o ro,noload $GPP $GPPMT --mkdir
+    
+    if [ -f $GPPMT/PWD_HASH_USER ]; then
+        unipi_password_set "$(cat $GPPMT/PWD_HASH_USER)"
+    elif [ -f $GPPMT/PWD_HASH_FACTORY ]; then
+        unipi_password_set "$(cat $GPPMT/PWD_HASH_FACTORY)" "1"
+    else
+        echo "Error: no password for user unipi specified in image or GPP."
+        exit 1
+    fi
+}
+
+
+USER="unipi"
+USER_LINE=$(getent shadow "${USER}")
+UNIPI_SN="$(cat /run/unipi-plc/unipi-id/product_serial)"
+
+# Check if user unipi exists
+if [ -z "$USER_LINE" ]; then
+    exit
+fi
+
+PWD_HASH_OLD=$(echo "$USER_LINE" | cut -d ":" -f2)
+
+# Check if a valid password is provided already
+case "$PWD_HASH_OLD" in
+    ""|"!"|"!!"|"*")
+        :
+    ;;
+    *)
+        exit
+    ;;
+esac
+
+unipi_sn_check "$UNIPI_SN"
+
+case "$?" in
+    "0")
+        unipi_hash_set
+    ;;
+    "1")
+        echo "Error: Invalid SN, no password is set for user unipi."
+    ;;
+    "2")
+        unipi_password_set "legacy" "1"
+    ;;
+esac

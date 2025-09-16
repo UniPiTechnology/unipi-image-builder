@@ -18,6 +18,10 @@ mmopt-$(CONFIG_UNIPI_REGENERATE_SSH) += --customize-hook='upload unipi/regenerat
 mmopt-$(CONFIG_UNIPI_REGENERATE_SSH) += --customize-hook='upload unipi/regenerate-ssh-keys/check-mac /etc/ssh/check-mac'
 mmopt-$(CONFIG_UNIPI_REGENERATE_SSH) += --customize-hook='unipi/regenerate-ssh-keys/customize'
 
+mmopt-$(UNIPI_DEFAULT_PASSWORD) += --customize-hook='upload unipi/unipi-default-password/unipi-defpass /usr/lib/unipi/unipi-defpass'
+mmopt-$(UNIPI_DEFAULT_PASSWORD) += --customize-hook='upload unipi/unipi-default-password/unipi-default-password.service /etc/systemd/system/unipi-default-password.service'
+mmopt-$(UNIPI_DEFAULT_PASSWORD) +=  --customize-hook='unipi/unipi-default-password/customize'
+
 mmopt-$(CONFIG_UNIPI_UPDATE_REGDB) += --customize-hook='unipi/update-regdb/customize'
 
 mmopt-$(CONFIG_UNIPI_DISABLE_JOURNAL) += --customize-hook='unipi/disable-persistent-journal/customize'
