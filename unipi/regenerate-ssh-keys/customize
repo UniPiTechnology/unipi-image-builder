@@ -14,9 +14,18 @@ set -eu
 TARGET=$1
 
 if test "${MMDEBSTRAP_MODE:-}" = chrootless; then
-    systemctl --root "$TARGET" enable regenerate_ssh_host_keys.service
+    systemctl --root "$TARGET" enable sshd-keygen regenerate_ssh_host_keys.service
 else
-    chroot "$TARGET" systemctl enable regenerate_ssh_host_keys.service
+    chroot "$TARGET" systemctl enable sshd-keygen regenerate_ssh_host_keys.service
 fi
 
 rm -f "$TARGET/etc/ssh/ssh_host"*
+
+mkdir -p $TARGET/etc/systemd/system/sshd-keygen.service.d
+cat > $TARGET/etc/systemd/system/sshd-keygen.service.d/override.conf <<EOF
+[Unit]
+ConditionFirstBoot=
+ConditionPathExists=/run/regenerate-ssh
+[Service]
+ExecStartPost=-/bin/systemctl disable --no-block --no-reload -q regenerate_ssh_host_keys
+EOF

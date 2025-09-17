@@ -59,6 +59,14 @@ config UNIPI_32_BIT
 	bool "Select 32-bit armhf architecture" if NEURON
 	default n if EDGE || PATRON || GATE || IRIS
 
+config PLATFORM_YAML
+	string "Define yaml file with platform boot disc parameters"
+	default "volumes/unipi_edge.yaml" if EDGE
+	default "volumes/unipi_zulu.yaml" if SOC_IMX
+	default "volumes/unipi_g1.yaml" if G1
+	default "volumes/unipi_axon.yaml" if AXON
+
+
 config UNIPI_ESSENTIAL
 	bool "Install Unipi essential packages"
 	default y if ! UNKNOWN
@@ -88,6 +96,10 @@ config UNIPI_REGENERATE_SSH
 	bool "Install service to regenerate ssh server keys"
 	default y if ! UNKNOWN
 
+config UNIPI_RESIZE_PARTITION
+	bool "Extend last partition to max free space during first boot"
+	default y if ! UNKNOWN
+
 config UNIPI_UPDATE_REGDB
 	bool "Install upstream regulatory.db for wifi"
 	default y if ! UNKNOWN
@@ -100,17 +112,15 @@ config UNIPI_DISABLE_JOURNAL
 	bool "Disable persistent journal"
 	default y if ! UNKNOWN
 
-config UNIPI_HAVEGED
-	bool "Install haveged daemon"
-	default y if ! UNKNOWN
-
 config UNIPI_IMAGE_VERSION
 	bool
 	default y if ! UNKNOWN
 
-config UNIPI_FSTAB
-	bool "Create default fstab"
+config UNIPI_TMP_IN_RAM
+	bool "Mount /tmp into RAM"
 	default y
+	help
+	  Mount tmpfs on directory /tmp. Max size of used RAM is 150MB
 
 config UNIPI_GETTY
 	bool "Enable getty only if framebuffer exists"
@@ -123,5 +133,13 @@ config UNIPI_FWUPDATE
 config UNIPI_EVOK
 	bool "Install Evok server" if ! EDGE && ! GATE
 	default n
+
+config UNIPI_HAVEGED
+	bool "Install haveged daemon"
+	default n
+
+config UNIPI_TPM2
+	bool "Install TPM2 tools"
+	default y if EDGE
 
 endif

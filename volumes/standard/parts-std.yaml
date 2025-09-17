@@ -1,0 +1,21 @@
+partitions:
+    - &boot
+      name: boot
+      type: "Linux boot"
+      size: $CONFIG_PARTITION_STD_BOOT_SIZE(200M)
+      boot_flag: 1
+
+    - &root
+      name: root
+      type: "Linux root"
+      size: $CONFIG_PARTITION_STD_ROOT_SIZE(0)
+
+volumes:
+    - partition: *root
+      mount_point: "/"
+      fs_type: "ext4"
+
+    - partition: *boot
+      mount_point: "/boot"
+      fs_type: "ext4"
+      automount: 1

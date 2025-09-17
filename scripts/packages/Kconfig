@@ -15,7 +15,7 @@ config TOOLS
 	bool "Usefull tools"
 	default y
 	help
-	  Install python3-minimal, xxd, gpiod, busybox, usbutils, wget
+	  Install python3-minimal, xxd, gpiod, busybox, usbutils, wget, curl
 
 menu "Text editors"
 

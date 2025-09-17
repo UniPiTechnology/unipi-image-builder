@@ -13,7 +13,8 @@ set -eu
 
 SRC="$1"
 SRCNAME=$(basename "$1")
-BUILDDIR=${BUILDDIR-build}
+BUILDTMPDIR=${BUILDTMPDIR-tmp}
+mkdir -p "$BUILDTMPDIR"
 
 if ! [ -r "$SRC/source" ]; then
     echo "Missing file $SRC/source" >&2
@@ -71,5 +72,5 @@ if [ -r "$SRC/pref" ]; then
     echo "EOF"
 fi
 
-) > "$BUILDDIR/.$SRCNAME"
-chmod +x "$BUILDDIR/.$SRCNAME"
+) > "$BUILDTMPDIR/.$SRCNAME"
+chmod +x "$BUILDTMPDIR/.$SRCNAME"

@@ -6,7 +6,7 @@ pkgs-$(CONFIG_SYSTOOLS) += $(if $(findstring y,$(CONFIG_DEBIAN_SUITE_STABLE)),po
 
 pkgs-$(CONFIG_NETTOOLS) += iproute2,openssh-client,openssh-server,nftables,netbase,bridge-utils,net-tools,iputils-ping
 
-pkgs-$(CONFIG_TOOLS) += python3-minimal,xxd,gpiod,busybox,usbutils,wget,evtest,logrotate,gawk
+pkgs-$(CONFIG_TOOLS) += python3-minimal,xxd,gpiod,busybox,usbutils,wget,curl,evtest,logrotate,gawk,dialog
 
 pkgs-$(CONFIG_EDITOR_VIM) += vim
 pkgs-$(CONFIG_EDITOR_NANO) += nano

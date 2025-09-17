@@ -1,0 +1,11 @@
+platform:
+        name: "axon"
+        mmcdev: "/dev/mmcblk1"
+        label: gpt
+        start_sector: 49152
+        uboot:
+            images:
+                - sourcefile: usr/lib/u-boot/unipi-axon/u-boot-sunxi-with-spl.bin
+                  offset: 8k
+        boot_partition:
+            size: 100M

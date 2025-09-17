@@ -1,0 +1,10 @@
+partitions:
+    - &root
+      name: root
+      type: "Linux root"
+      boot_flag: 1
+
+volumes:
+    - partition: *root
+      mount_point: "/"
+      fs_type: "ext4"

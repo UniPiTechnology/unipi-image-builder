@@ -1,0 +1,54 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file Documentation/kbuild/kconfig-language.txt in the
+# Linux kernel source tree.
+#
+mainmenu "Unipi Image Builder Output Format"
+
+#choice
+#	prompt "Output image format"
+#	default IMAGE_FORMAT_TAR
+
+config IMAGE_FORMAT_TAR
+	bool
+	prompt "Chroot directory stored as tarball"
+	default y
+
+config IMAGE_FORMAT_VM
+	bool "Image for virtual machine VM (single ext4 fs)"
+	select IMAGE_FORMAT_TAR
+
+config IMAGE_FORMAT_SWU
+	bool "Image packed into SWupdate format"
+	select IMAGE_FORMAT_TAR
+
+config IMAGE_FORMAT_RAW
+	bool "Raw disc image including partition table"
+	select IMAGE_FORMAT_TAR
+
+config IMAGE_FORMAT_RAWMINI
+	bool "Raw disc image minimal - bootloader only"
+	select IMAGE_FORMAT_TAR
+
+config IMAGE_FORMAT_RAWPART
+	bool "Raw partitions in files"
+	select IMAGE_FORMAT_TAR
+
+#endchoice
+
+config USE_PACKAGING
+	bool
+	default y if IMAGE_FORMAT_VM
+	default y if IMAGE_FORMAT_SWU
+	default y if IMAGE_FORMAT_RAW
+	default y if IMAGE_FORMAT_RAWMINI
+	default y if IMAGE_FORMAT_RAWPART
+
+config USE_VOLUMES
+	bool
+	default y if IMAGE_FORMAT_SWU
+	default y if IMAGE_FORMAT_RAW
+	default y if IMAGE_FORMAT_RAWMINI
+	default y if IMAGE_FORMAT_RAWPART
+
+source "volumes/Kconfig"

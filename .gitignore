@@ -1,7 +1,11 @@
 Makefile.addons
 Kconfig.addons
 build/
+tmp/
 .config
 .config.old
+.format
+.format.old
 rootpw
 sshkey
+__pycache__
