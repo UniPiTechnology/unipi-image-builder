@@ -94,6 +94,7 @@ case "$?" in
     ;;
     "1")
         echo "Error: Invalid SN, no password is set for user unipi."
+		exit 1
     ;;
     "2")
         unipi_password_set "legacy" "1"
