@@ -10,7 +10,7 @@ pkgs-$(CONFIG_UNIPI_ESSENTIAL) += $(if $(findstring y,$(CONFIG_SOC_BCM)),raspi-f
 
 pkgs-$(CONFIG_UNIPI_RECOMMENDED) += unipi-os-configurator,unipi-os-configurator-data,unipi-altboot,unipi-kernel-modules
 pkgs-$(CONFIG_UNIPI_RECOMMENDED) += $(UNIPI_MODBUS),ca-certificates,mbpoll,minicom
-pkgs-$(CONFIG_UNIPI_RECOMMENDED) += unipi-flash-diag,unipi-firmware-tools,unipi-firmware6
+pkgs-$(CONFIG_UNIPI_RECOMMENDED) += unipi-flash-diag,unipi-firmware-tools,unipi-firmware6$(if $(findstring y,$(CONFIG_EDGE)),unipi-firmware-52)
 
 mmopt-$(CONFIG_UNIPI_LOCALES) += --customize-hook='unipi/locales/customize'
 
