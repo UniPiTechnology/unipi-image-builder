@@ -1,16 +1,17 @@
 #!/bin/sh
 
 unipi_password_set() {
-    local PWD_HASH=$1
+    PWD_HASH_SET=$1
     
-    if [ "$PWD_HASH" = "legacy" ]; then
-        usermod ${USER} -p '$y$j9T$pi9lbl3bLQsb2OYu5G/7d1$7A8hVYSxM.RSbyaSbVNSvKrf2Eh3woivl2SE1gfFl79'
+    if [ "$PWD_HASH_SET" = "legacy" ]; then
+		# shellcheck disable=SC2016 # $ is supposed to be in the hash
+        usermod ${USER_TARGET} -p '$y$j9T$pi9lbl3bLQsb2OYu5G/7d1$7A8hVYSxM.RSbyaSbVNSvKrf2Eh3woivl2SE1gfFl79'
     else
-        usermod ${USER} -p "$PWD_HASH"
+        usermod ${USER_TARGET} -p "$PWD_HASH_SET"
     fi
     
     if [ "$2" = "1" ]; then
-        passwd -e ${USER} >/dev/null
+        passwd -e ${USER_TARGET} >/dev/null
     fi
 }
 
@@ -20,7 +21,7 @@ unipi_sn_check() {
     # 1 - invalid SN
     # 2 - old SN
     
-    local UNIPI_SN=$1
+    UNIPI_SN=$1
     
     case "$UNIPI_SN" in
         ''|*[!0-9]*)
@@ -31,24 +32,25 @@ unipi_sn_check() {
         ;;
     esac
     
-    if [ $UNIPI_SN -lt 0 ]; then return 1
-    elif [ $UNIPI_SN -lt 1253800000 ]; then return 2
-    elif [ $UNIPI_SN -lt 2000000000 ]; then return 0
-    elif [ $UNIPI_SN -lt 2253800000 ]; then return 2
+    if [ "$UNIPI_SN" -lt 0 ]; then return 1
+    elif [ "$UNIPI_SN" -lt 1253800000 ]; then return 2
+    elif [ "$UNIPI_SN" -lt 2000000000 ]; then return 0
+    elif [ "$UNIPI_SN" -lt 2253800000 ]; then return 2
     else return 0
     fi
 }
 
 unipi_hash_set() {
 
-    local GPP="/dev/mmcblk0gp0" # todo: get this from symlink
-    local GPPMT="/run/unipi-plc/gpp-factory"
+    GPP="/dev/mmcblk0gp0" # todo: get this from symlink
+    GPPMT="/run/unipi-plc/gpp-factory"
 
     if [ ! -b "$GPP" ]; then
         echo "Error: GPP does not exist."
         exit 1
     fi
 
+	# shellcheck disable=SC2064 # $ it is desire to be expanded now
     trap "umount $GPPMT && rmdir $GPPMT" EXIT
     mount -o ro,noload $GPP $GPPMT --mkdir
     
@@ -63,8 +65,8 @@ unipi_hash_set() {
 }
 
 
-USER="unipi"
-USER_LINE=$(getent shadow "${USER}")
+USER_TARGET="unipi"
+USER_LINE=$(getent shadow "${USER_TARGET}")
 UNIPI_SN="$(cat /run/unipi-plc/unipi-id/product_serial)"
 
 # Check if user unipi exists
