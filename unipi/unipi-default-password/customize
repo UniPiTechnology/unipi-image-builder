@@ -18,3 +18,5 @@ if test "${MMDEBSTRAP_MODE:-}" = chrootless; then
 else
     chroot "$TARGET" systemctl enable unipi-default-password.service
 fi
+
+chmod +x $TARGET/usr/lib/unipi/unipi-defpass
