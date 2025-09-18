@@ -1,0 +1,20 @@
+#!/bin/bash
+# Copyright (C) Unipi Technology spol. s r.o. - All Rights Reserved
+# SPDX-License-Identifier: MIT
+#
+# @author Miroslav Ondra <ondra@unipi.technology>
+# @author Unipi Technology <info@unipi.technology>
+# @date 2024-10-07
+
+# This is mmdebstrap customize hook that enables service
+# for setting default unipi password
+
+set -eu
+
+TARGET=$1
+
+if test "${MMDEBSTRAP_MODE:-}" = chrootless; then
+    systemctl --root "$TARGET" enable unipi-default-password.service
+else
+    chroot "$TARGET" systemctl enable unipi-default-password.service
+fi

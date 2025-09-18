@@ -88,6 +88,10 @@ config UNIPI_LOCALES
 	bool "Set default locales"
 	default y if ! UNKNOWN
 
+config UNIPI_DEFAULT_PASSWORD
+	bool "Install tool for setting default unipi password"
+	default y if ! UNKNOWN
+
 config UNIPI_REGENERATE_SSH
 	bool "Install service to regenerate ssh server keys"
 	default y if ! UNKNOWN
